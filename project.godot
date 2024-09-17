@@ -1,0 +1,45 @@
+; Engine configuration file.
+; It's best edited using the editor UI and not directly,
+; since the parameters that go here are not all obvious.
+;
+; Format:
+;   [section] ; section goes between []
+;   param=value ; assign values to parameters
+
+config_version=5
+
+[application]
+
+config/name="Event Audio"
+run/main_scene="res://addons/event_audio/example/example2D.tscn"
+config/features=PackedStringArray("4.3", "Mobile")
+config/icon="res://icon.svg"
+
+[autoload]
+
+EventAudio="*res://addons/event_audio/scenes/event_audio_autoload.tscn"
+
+[debug]
+
+gdscript/warnings/exclude_addons=false
+
+[display]
+
+window/size/initial_position_type=3
+window/size/always_on_top=true
+
+[dotnet]
+
+project/assembly_name="Event Audio"
+
+[editor]
+
+import/use_multiple_threads=false
+
+[editor_plugins]
+
+enabled=PackedStringArray("res://addons/event_audio/plugin.cfg")
+
+[rendering]
+
+renderer/rendering_method="mobile"

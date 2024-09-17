@@ -1,0 +1,8 @@
+[gd_scene load_steps=2 format=3 uid="uid://be741v81fj3xc"]
+
+[ext_resource type="Script" path="res://addons/event_audio/event_audio.gd" id="1_75kvd"]
+
+[node name="EventAudio" type="Node"]
+script = ExtResource("1_75kvd")
+
+[node name="EventAudioAutoload" type="Node" parent="."]
