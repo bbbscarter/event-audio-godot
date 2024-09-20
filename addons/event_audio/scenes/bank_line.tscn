@@ -1,0 +1,63 @@
+[gd_scene load_steps=6 format=3 uid="uid://co2eglljfwoxo"]
+
+[ext_resource type="Texture2D" uid="uid://pad8hlsq2shw" path="res://addons/event_audio/icons/Close.svg" id="1_2kmlt"]
+[ext_resource type="Script" path="res://addons/event_audio/audio_bank_line_ui.gd" id="1_melcq"]
+[ext_resource type="Texture2D" uid="uid://i4qa40akvjaa" path="res://addons/event_audio/icons/Tools.svg" id="2_31ihp"]
+[ext_resource type="Texture2D" uid="uid://dcbbwdp16tdns" path="res://addons/event_audio/icons/RandomNumberGenerator.svg" id="3_ikqib"]
+[ext_resource type="PackedScene" uid="uid://b84km51g3vs0n" path="res://addons/event_audio/scenes/bank_resource_line.tscn" id="5_nou6o"]
+
+[node name="TriggerLine" type="HBoxContainer" node_paths=PackedStringArray("DeleteTriggerButton", "ToolButton", "PlayRandomButton", "TriggerNameEdit", "SettingsButton", "ResourceList")]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -38.0
+offset_bottom = -655.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+script = ExtResource("1_melcq")
+DeleteTriggerButton = NodePath("HBoxContainer/DeleteButton")
+ToolButton = NodePath("HBoxContainer/SettingsButton")
+PlayRandomButton = NodePath("HBoxContainer/RandomButton")
+TriggerNameEdit = NodePath("HBoxContainer/TriggerEdit")
+SettingsButton = NodePath("HBoxContainer/SettingsButton")
+ResourceList = NodePath("BoxContainer/ResourceList")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="."]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 0
+
+[node name="DeleteButton" type="Button" parent="HBoxContainer"]
+layout_mode = 2
+icon = ExtResource("1_2kmlt")
+
+[node name="TriggerEdit" type="LineEdit" parent="HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="SettingsButton" type="Button" parent="HBoxContainer"]
+custom_minimum_size = Vector2(16, 16)
+layout_mode = 2
+icon = ExtResource("2_31ihp")
+icon_alignment = 1
+
+[node name="RandomButton" type="Button" parent="HBoxContainer"]
+layout_mode = 2
+icon = ExtResource("3_ikqib")
+
+[node name="BoxContainer" type="BoxContainer" parent="."]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="ResourceList" type="VBoxContainer" parent="BoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="ResourceLine" parent="BoxContainer/ResourceList" instance=ExtResource("5_nou6o")]
+visible = false
+layout_mode = 2
+
+[node name="ResourceLine2" parent="BoxContainer/ResourceList" instance=ExtResource("5_nou6o")]
+visible = false
+layout_mode = 2

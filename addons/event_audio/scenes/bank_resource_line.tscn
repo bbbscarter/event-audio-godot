@@ -1,0 +1,42 @@
+[gd_scene load_steps=5 format=3 uid="uid://b84km51g3vs0n"]
+
+[ext_resource type="Script" path="res://addons/event_audio/audio_resource_line_ui.gd" id="1_fwtai"]
+[ext_resource type="Texture2D" uid="uid://byclw0utbwbam" path="res://addons/event_audio/icons/Play.svg" id="2_jis6r"]
+[ext_resource type="Texture2D" uid="uid://dqg7mfau2g7ck" path="res://addons/event_audio/icons/Add.svg" id="3_aknch"]
+[ext_resource type="Texture2D" uid="uid://djgktanb5swk6" path="res://addons/event_audio/icons/Remove.svg" id="4_il77p"]
+
+[node name="ResourceLine" type="HBoxContainer" node_paths=PackedStringArray("DeleteResourceButton", "AddResourceButton", "PlayButton")]
+size_flags_horizontal = 3
+size_flags_vertical = 3
+script = ExtResource("1_fwtai")
+DeleteResourceButton = NodePath("DeleteButton")
+AddResourceButton = NodePath("AddButton")
+PlayButton = NodePath("PlayButton")
+
+[node name="PlayButton" type="Button" parent="."]
+layout_mode = 2
+icon = ExtResource("2_jis6r")
+
+[node name="WeightSliderContainer" type="FlowContainer" parent="."]
+custom_minimum_size = Vector2(64, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 0.5
+alignment = 1
+
+[node name="ResourcePickerContainer" type="BoxContainer" parent="."]
+custom_minimum_size = Vector2(128, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+alignment = 1
+vertical = true
+
+[node name="AddButton" type="Button" parent="."]
+layout_mode = 2
+size_flags_vertical = 3
+icon = ExtResource("3_aknch")
+
+[node name="DeleteButton" type="Button" parent="."]
+layout_mode = 2
+size_flags_vertical = 3
+icon = ExtResource("4_il77p")

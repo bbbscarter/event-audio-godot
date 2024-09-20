@@ -19,3 +19,9 @@ func find_entry_with_trigger(trigger: String) -> AudioBankEntry:
 
     return null
         
+func _sort_func(a: AudioBankEntry, b: AudioBankEntry) -> bool:
+    return a.trigger_tags < b.trigger_tags
+    
+func sort_by_trigger():
+    entries.sort_custom(_sort_func)
+ 

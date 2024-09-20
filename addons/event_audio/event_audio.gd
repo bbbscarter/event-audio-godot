@@ -18,14 +18,14 @@ var _rng: RandomNumberGenerator
 static func get_instance() -> EventAudioAPI:
     return instance
 
-class ActiveAudio2D:
+class AudioEmitter2D:
     var source: Node2D
     var player: AudioStreamPlayer2D
     var event: AudioBankEntry
 
 var _active_audio_2D = Array()
 
-class ActiveAudio3D:
+class AudioEmitter3D:
     var source: Node3D
     var player: AudioStreamPlayer3D
     var event: AudioBankEntry
@@ -39,11 +39,7 @@ func _enter_tree():
 func _exit_tree():
     instance = null
 
-func stop(audio_stream_player):
-    audio_stream_player.stop()
-
 static func init_player_from_playback_settings(rng, stream_player, settings: AudioEntryPlaybackSettings):
-    print(settings.max_pitch)
     var min_pitch := min(settings.min_pitch, settings.max_pitch) as float
     var max_pitch := max(settings.min_pitch, settings.max_pitch) as float
     var pitch = rng.randf_range(min_pitch, max_pitch)
@@ -54,7 +50,8 @@ static func init_player_from_playback_settings(rng, stream_player, settings: Aud
         stream_player.unit_size = settings.unit_size
         
     
-func play_2d(trigger: String, source: Node2D) -> AudioStreamPlayer2D:
+func play_2d(trigger: String, source: Node2D) -> AudioEmitter2D:
+# func play_2d(trigger: String, source: Node2D) -> AudioStreamPlayer2D:
     var entry := _find_entry_for_trigger(trigger)
     if entry == null:
         return
@@ -71,13 +68,13 @@ func play_2d(trigger: String, source: Node2D) -> AudioStreamPlayer2D:
 
     stream_player.play()
     
-    var active_player := ActiveAudio2D.new()
+    var active_player := AudioEmitter2D.new()
     active_player.player = stream_player
     active_player.source = source
     active_player.event = entry
     _active_audio_2D.append(active_player)
     
-    return stream_player
+    return active_player
 
 func play_3d(trigger: String, source: Node3D) -> AudioStreamPlayer3D:
     var entry := _find_entry_for_trigger(trigger)
@@ -96,13 +93,16 @@ func play_3d(trigger: String, source: Node3D) -> AudioStreamPlayer3D:
     if source:
         stream_player.global_position = source.global_position
     
-    var active_player = ActiveAudio3D.new()
+    var active_player = AudioEmitter3D.new()
     active_player.player = stream_player
     active_player.source = source
     active_player.event = entry
     _active_audio_2D.append(active_player)
     
-    return stream_player
+    return active_player
+
+func stop(emitter):
+    emitter.player.stop()
 
 func register_bank_resource(bank: AudioBankResource):
     if log_registrations:
