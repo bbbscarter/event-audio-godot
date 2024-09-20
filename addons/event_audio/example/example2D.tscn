@@ -15,7 +15,7 @@ mesh = SubResource("SphereMesh_7scev")
 script = ExtResource("1_7u4pm")
 
 [node name="Camera2D" type="Camera2D" parent="."]
-anchor_mode = 0
+position = Vector2(578, 324)
 
 [node name="AudioListener2D" type="AudioListener2D" parent="Camera2D"]
 current = true

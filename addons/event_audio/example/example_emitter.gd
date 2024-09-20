@@ -3,6 +3,7 @@ class_name ExampleEmitter
 #@onready var Audio = $"/root/Audio"
 
 @export var Speed := 1.0
+var _loop_emitter : EventAudioAPI.AudioEmitter2D
 
 func _process(delta: float):
     var screen_width := get_viewport_rect().size.x
@@ -34,4 +35,8 @@ func _input(event: InputEvent):
         EventAudio.play_2d("shoot+laser", self)
         
     if event.keycode == KEY_4:
-        EventAudio.play_2d("loop", self)
+        if _loop_emitter:
+            EventAudio.stop(_loop_emitter)
+            _loop_emitter = null
+        else:
+            _loop_emitter = EventAudio.play_2d("loop", self)
