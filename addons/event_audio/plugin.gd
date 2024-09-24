@@ -21,12 +21,3 @@ func _exit_tree():
         remove_inspector_plugin(_editor_plugin)
     if ProjectSettings.has_setting("autoload/EventAudio"):
         remove_autoload_singleton("EventAudio")
-
-# var _plugin
-# func _enter_tree():
-#     _plugin = preload("res://addons/opg_audio/audio_bank_resource_inspector.gd").new()
-#     add_inspector_plugin(_plugin)
-
-
-# func _exit_tree():
-#     remove_inspector_plugin(_plugin)

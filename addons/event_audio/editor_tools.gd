@@ -4,7 +4,6 @@ static var _editor_stream_player : AudioStreamPlayer
 
 static func play_sound(entry: AudioBankEntry, stream: AudioStream, rng):
     var main_screen = EditorInterface.get_editor_main_screen()
-    # var audio: AudioStreamPlayer = main_screen.find_child("_EditorAudio") as AudioStreamPlayer
     var audio = _editor_stream_player
     if audio == null:
         audio = AudioStreamPlayer.new()
@@ -20,7 +19,6 @@ static func play_sound(entry: AudioBankEntry, stream: AudioStream, rng):
 
 static func stop_sound():
     var audio = _editor_stream_player
-    # var audio: AudioStreamPlayer = EditorInterface.get_editor_main_screen().find_child("_EditorAudio") as AudioStreamPlayer
     if audio != null:
         print("Stopping audio")
         audio.stop()
@@ -48,8 +46,6 @@ static func make_property_panel(obj: Object, excludes : Dictionary, change_callb
 
     return settings_panel
 
-static var _regex = null
- 
 static func _parse_range(prop) -> Dictionary:
     if prop["hint"] != PROPERTY_HINT_RANGE:
         return {}
@@ -78,17 +74,21 @@ static func _parse_range(prop) -> Dictionary:
             prop_range["step"] = parts[2].to_int()
 
     if parts.size() > 3:
-        if parts[3] == "or_lesser":
-            prop_range["or_lesser"] = true
-        elif parts[3] == "or_greater":
-            prop_range["or_greater"] = true
+        match parts[3]:
+            "or_lesser":
+                prop_range["or_lesser"] = true
+            "or_greater":
+                prop_range["or_greater"] = true
 
     if parts.size() > 4:
-        if parts[4] == "or_lesser":
-            prop_range["or_lesser"] = true
-        elif parts[4] == "or_greater":
-            prop_range["or_greater"] = true
- 
+        match parts[4]:
+            "or_lesser":
+                prop_range["or_lesser"] = true
+            "or_greater":
+                prop_range["or_greater"] = true
+            _:
+                pass
+
     return prop_range
         
     
@@ -102,9 +102,7 @@ static func _make_property_editor(prop, initial_value, update_callback: Callable
     line_container.add_child(text_label)
 
     var prop_type: Variant.Type = prop["type"]
-
     var prop_range : Dictionary = _parse_range(prop)
-    # var prop_range : Dictionary = {}
     
     match prop_type:
         TYPE_BOOL:
@@ -123,9 +121,6 @@ static func _make_property_editor(prop, initial_value, update_callback: Callable
                 prop_editor.step = 0.001
 
             prop_editor.hide_slider = false
-            #prop_editor.allow_lesser = true
-            #prop_editor.allow_greater = true
-
             prop_editor.allow_lesser = prop_range.has("or_lesser")
             prop_editor.allow_greater = prop_range.has("or_greater")
 
@@ -148,7 +143,6 @@ static func _make_property_editor(prop, initial_value, update_callback: Callable
         TYPE_STRING, TYPE_STRING_NAME, TYPE_NODE_PATH:
             var prop_editor = LineEdit.new()
             prop_editor.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-            # prop_editor.size_flags_stretch_ratio = 2.0
             if initial_value != null:
                 prop_editor.text = initial_value
 

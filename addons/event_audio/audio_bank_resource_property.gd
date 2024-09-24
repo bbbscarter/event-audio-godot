@@ -2,8 +2,9 @@
 extends EditorProperty
 
 class_name AudioBankResourceProperty
+var _audio_bank_line_scene = preload("res://addons/event_audio/scenes/bank_line.tscn")
+var _audio_bank_resource_line_scene = preload("res://addons/event_audio/scenes/bank_resource_line.tscn")
 
-var property_control = Button.new()
 var _resource: AudioBankResource
 var _property_name: StringName
 var _entries: Array[AudioBankEntry]
@@ -13,17 +14,6 @@ var _settings_open = {}
 var _rng = RandomNumberGenerator.new()
 
 var _internal_update := 0
-var _panel_color: Color        
-
-var audio_bank_line = preload("res://addons/event_audio/scenes/bank_line.tscn")
-var audio_resource_line = preload("res://addons/event_audio/scenes/bank_resource_line.tscn")
-
-# var _icon_settings := EditorInterface.get_editor_theme().get_icon("Tools", "EditorIcons")
-# var _icon_delete := EditorInterface.get_editor_theme().get_icon("Close", "EditorIcons")
-# var _icon_add_resource := EditorInterface.get_editor_theme().get_icon("Add", "EditorIcons")
-# var _icon_remove_resource := EditorInterface.get_editor_theme().get_icon("Remove", "EditorIcons")
-# var _icon_play := EditorInterface.get_editor_theme().get_icon("Play", "EditorIcons")
-# var _icon_play_random := EditorInterface.get_editor_theme().get_icon("RandomNumberGenerator", "EditorIcons")
 
 var _focus_on_trigger : String = ""
 
@@ -50,17 +40,11 @@ func _update_property():
         if line.TriggerNameEdit.text == _focus_on_trigger:
             print("found " + _focus_on_trigger)
             EditorInterface.get_inspector().ensure_control_visible(line.TriggerNameEdit)
-            # _last_control.grab_focus()
             break
 
     _focus_on_trigger = ""
 
 func _enter_tree():
-    # EditorInterface.get_editor_main_screen()
-    # print(EditorInterface.get_editor_theme().get_color_list("Editor"))
-    # print(EditorInterface.get_editor_theme().has_color("dark_color_1", "Editor"))
-    _panel_color = EditorInterface.get_editor_theme().get_color("contrast_color_1", "Editor") 
-    #get_color_list("Editor"))
     _property_name = get_edited_property()
 
     _resource = get_edited_object() as AudioBankResource
@@ -72,11 +56,6 @@ func _enter_tree():
     add_child(_viewContainer)
     set_bottom_editor(_viewContainer)
 
-    # var gui = EditorInterface.get_base_control()
-    # var load_icon = gui.get_icon("Load", "EditorIcons")
-    # print(EditorInterface.get_editor_theme().get_icon_list("EditorIcons"))
-    # print(EditorInterface.get_editor_theme().get_icon_type_list())
-    # RandomNumberGenerator, Play, Tools, Add, Remove, Close/GuiClose
 
 #--------------------------------------
 func _add_settings_panel_maybe(entry: AudioBankEntry, entryLine: Container):
@@ -116,7 +95,7 @@ func _make_lines():
         _add_settings_panel_maybe(entry, entryLine)
 
 func _makeEntryLine(entry: AudioBankEntry) -> Container:
-    var line := audio_bank_line.instantiate() as AudioBankLineUI
+    var line := _audio_bank_line_scene.instantiate() as AudioBankLineUI
     line.DeleteTriggerButton.pressed.connect(_on_delete_entry_button_clicked.bind(entry))
     line.TriggerNameEdit.set_text(entry.trigger_tags)
     line.TriggerNameEdit.text_submitted.connect(_on_trigger_submitted.bind(entry, line.TriggerNameEdit))
@@ -125,9 +104,9 @@ func _makeEntryLine(entry: AudioBankEntry) -> Container:
     line.PlayRandomButton.pressed.connect(_on_play_random_button_clicked.bind(entry))
 
     for c1: int in entry.audio_streams.size():
-        var resource_line := audio_resource_line.instantiate() as AudioResourceLineUI
+        var resource_line := _audio_bank_resource_line_scene.instantiate() as AudioResourceLineUI
         line.ResourceList.add_child(resource_line)
-        resource_line.set_as_first_resource(c1 == 0)
+        resource_line.set_as_first_resource(entry.audio_streams.size() == 1)
 
         resource_line.PlayButton.pressed.connect(_on_play_button_clicked.bind(c1, entry))
 
@@ -143,159 +122,9 @@ func _makeEntryLine(entry: AudioBankEntry) -> Container:
 
     return line
     
-# func _makeEntryLine2(entry: AudioBankEntry) -> Container:
-#     var line_container = HBoxContainer.new()
-#     line_container.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-#     # lineContainer.size_flags_vertical = Control.SIZE_EXPAND_FILL
-#     line_container.size_flags_vertical = Control.SIZE_EXPAND
-    
-#     var deleteButton = TextureButton.new()
-#     deleteButton.texture_normal = _icon_delete
-#     # deleteButton.stretch_mode = TextureButton.STRETCH_KEEP_CENTERED
-#     deleteButton.size_flags_vertical = Control.SIZE_SHRINK_BEGIN
-#     deleteButton.pressed.connect(_on_delete_entry_button_clicked.bind(entry))
-#     line_container.add_child(deleteButton)
-
-
-#     var label_container = VBoxContainer.new()
-#     # labelContainer.size_flags_vertical = Control.SIZE_EXPAND_FILL
-#     label_container.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-#     label_container.size_flags_vertical = Control.SIZE_EXPAND_FILL
-#     # labelContainer.size_flags_vertical = Control.SIZE_SHRINK_CENTER
-#     line_container.add_child(label_container)
-    
-#     var trigger_editor = LineEdit.new()
-#     trigger_editor.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-#     trigger_editor.size_flags_vertical = Control.SIZE_SHRINK_BEGIN
-#     # label.size_flags_vertical = Control.SIZE_SHRINK_CENTER or Control.SIZE_EXPAND
-#     trigger_editor.set_text(entry.trigger_tags)
-#     trigger_editor.text_submitted.connect(_on_trigger_submitted.bind(entry, trigger_editor))
-#     trigger_editor.text_changed.connect(_on_trigger_changed.bind(entry, trigger_editor))
-#     label_container.add_child(trigger_editor)
-
-#     var settings_button := TextureButton.new()
-#     settings_button.texture_normal = _icon_settings
-#     settings_button.stretch_mode = TextureButton.STRETCH_KEEP_CENTERED
-#     settings_button.pressed.connect(_on_settings_button_clicked.bind(line_container, entry))
-#     settings_button.size_flags_vertical = Control.SIZE_SHRINK_BEGIN
-#     line_container.add_child(settings_button)
-
-#     var play_random_button := TextureButton.new()
-#     play_random_button.texture_normal = _icon_play_random
-#     play_random_button.stretch_mode = TextureButton.STRETCH_KEEP_CENTERED
-#     play_random_button.pressed.connect(_on_play_random_button_clicked.bind(entry))
-#     play_random_button.size_flags_vertical = Control.SIZE_SHRINK_BEGIN
-#     line_container.add_child(play_random_button)
-    
-#     var resource_container = VBoxContainer.new()
-#     #labelContainer.size_flags_vertical = Control.SIZE_EXPAND_FILL
-#     resource_container.size_flags_horizontal = Control.SIZE_FILL
-#     #resourceContainer.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-#     # labelContainer.size_flags_vertical = Control.SIZE_EXPAND_FILL
-#     resource_container.size_flags_vertical = Control.SIZE_EXPAND_FILL
-#     line_container.add_child(resource_container)
-
-#     for c1: int in entry.audio_streams.size():
-#         var resource_line_container = HBoxContainer.new()
-#         # labelContainer.size_flags_vertical = Control.SIZE_EXPAND_FILL
-#         resource_line_container.size_flags_horizontal = Control.SIZE_FILL
-#         # labelContainer.size_flags_vertical = Control.SIZE_EXPAND_FILL
-#         resource_line_container.size_flags_vertical = Control.SIZE_FILL
-#         resource_container.add_child(resource_line_container)
-
-#         var play_button := TextureButton.new()
-#         play_button.texture_normal = _icon_play
-#         play_button.stretch_mode = TextureButton.STRETCH_KEEP_CENTERED
-#         # addResourceButton.stretch_mode = TextureButton.STRETCH_KEEP_CENTERED
-#         ##print("Binding: %d" % c1)
-#         play_button.pressed.connect(_on_play_button_clicked.bind(c1, entry))
-#         resource_line_container.add_child(play_button)
-        
-#         var weight_editor := EditorSpinSlider.new()
-#         weight_editor.label = "weight"
-#         weight_editor.custom_minimum_size = Vector2(128, 32) 
-#         weight_editor.step = 0.01
-#         weight_editor.hide_slider = false
-#         weight_editor.allow_lesser = false
-#         weight_editor.allow_greater = false
-#         weight_editor.min_value = 0
-#         weight_editor.max_value = 1.0
-#         weight_editor.value_changed.connect(_on_stream_weight_changed.bind(c1, entry))
-#         weight_editor.value = entry.probability_weights[c1]
-#         weight_editor.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-#         resource_line_container.add_child(weight_editor)
-
-#         var resource_selector := EditorResourcePicker.new()
-#         resource_selector.size_flags_horizontal = Control.SIZE_FILL
-#         resource_selector.custom_minimum_size = Vector2(256, 32)
-
-#         # resourceSelector.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-#         # resourceSelector.size_flags_stretch_ratio = 0.5
-#         resource_selector.base_type = "AudioStream"
-#         resource_selector.edited_resource = entry.audio_streams[c1]
-#         resource_selector.resource_changed.connect(_on_stream_changed.bind(c1, entry))
-#         resource_line_container.add_child(resource_selector)
-    
-#         var resource_button_container := VBoxContainer.new()
-#         # labelContainer.size_flags_vertical = Control.SIZE_EXPAND_FILL
-#         resource_button_container.size_flags_horizontal = Control.SIZE_FILL
-#         # labelContainer.size_flags_vertical = Control.SIZE_EXPAND_FILL
-#         resource_button_container.size_flags_vertical = Control.SIZE_FILL
-#         resource_line_container.add_child(resource_button_container)
-
-#         var add_resource_button := TextureButton.new()
-#         add_resource_button.texture_normal = _icon_add_resource
-#         add_resource_button.stretch_mode = TextureButton.STRETCH_KEEP_CENTERED
-#         # addResourceButton.stretch_mode = TextureButton.STRETCH_KEEP_CENTERED
-#         add_resource_button.pressed.connect(_on_add_resource_button_clicked.bind(c1, entry))
-#         resource_button_container.add_child(add_resource_button)
-    
-#         if entry.audio_streams.size() > 1:
-#             var delete_resource_button := TextureButton.new()
-#             delete_resource_button.texture_normal = _icon_remove_resource
-#             delete_resource_button.stretch_mode = TextureButton.STRETCH_KEEP_CENTERED
-#             # addResourceButton.stretch_mode = TextureButton.STRETCH_KEEP_CENTERED
-#             delete_resource_button.pressed.connect(_on_delete_resource_button_clicked.bind(c1, entry))
-#             resource_button_container.add_child(delete_resource_button)
-
-#     return line_container
-
-# func _make_settings_panel(entry: AudioBankEntry) -> Container:
-#     var settings_panel = PanelContainer.new()
-#     settings_panel.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-#     # var style := StyleBoxLine.new()
-#     # style.set_color(Color(1.0, 0, 0, 1.0))
-#     # style.thickness = 5
-#     # var style := StyleBoxFlat.new()
-#     # style.bg_color = _panel_color#(0.2, 0, 0, 1)
-#     settings_panel.modulate = Color(0.8, 0.8, 1)
-#     # settings_panel.add_theme_stylebox_override("panel", style)
-#     # settingsPanel.theme.panel = style
-
-#     var settings_container = VBoxContainer.new()
-#     settings_container.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-#     # settingsContainer.add_child(settingsPanel)
-#     settings_panel.add_child(settings_container)
-    
-#     settings_container.add_child(Label.new())
-#     var entry_settings := entry.playback_settings
-
-#     for prop in entry_settings.get_property_list():
-#         if prop.usage & PROPERTY_USAGE_STORAGE and not prop.name in _exclude_props:
-#             # print(prop)
-#             var val = entry_settings.get(prop.name)
-#             var c = _make_property_editor(
-#                 prop, val,
-#                 _on_settings_entry_changed.bind(entry_settings, prop.name))
-#             settings_container.add_child(c)
-
-#     return settings_panel
-#     # return settingsContainer
 
 func _on_settings_button_clicked(line: Container, entry: AudioBankEntry):
     _toggle_settings_panel(entry, line)
-    # var settingsPanel := _make_settings_panel(entryIdx)
-    # line.add_sibling(settingsPanel)
 
 func _on_settings_entry_changed(val, settings: AudioEntryPlaybackSettings, member: StringName):
     settings.set(member, val)
@@ -346,6 +175,7 @@ func _check_trigger_name(entry: AudioBankEntry, trigger: String) -> bool:
     return true
 
 func _on_trigger_changed(trigger: String, entry: AudioBankEntry, text_label):
+    # If the trigger isn't valid, show an error color
     if _check_trigger_name(entry, trigger):
         text_label.modulate = Color.WHITE
     else:
@@ -356,7 +186,7 @@ func _on_trigger_submitted(trigger: String, entry: AudioBankEntry, text_label):
         entry.trigger_tags = trigger
         text_label.release_focus()
 
-        # Resort the bank - this may trigger a UI update, so make sure we focus on the right control
+        # Re-sort the bank - this may trigger a UI update, so make sure we focus on the right control
         _sort_bank()
         _focus_on_trigger = trigger
         emit_changed(_property_name, _entries)

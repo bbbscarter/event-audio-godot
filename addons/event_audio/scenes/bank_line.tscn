@@ -6,7 +6,7 @@
 [ext_resource type="Texture2D" uid="uid://dcbbwdp16tdns" path="res://addons/event_audio/icons/RandomNumberGenerator.svg" id="3_ikqib"]
 [ext_resource type="PackedScene" uid="uid://b84km51g3vs0n" path="res://addons/event_audio/scenes/bank_resource_line.tscn" id="5_nou6o"]
 
-[node name="TriggerLine" type="HBoxContainer" node_paths=PackedStringArray("DeleteTriggerButton", "ToolButton", "PlayRandomButton", "TriggerNameEdit", "SettingsButton", "ResourceList")]
+[node name="TriggerLine" type="HBoxContainer" node_paths=PackedStringArray("DeleteTriggerButton", "PlayRandomButton", "TriggerNameEdit", "SettingsButton", "ResourceList")]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -17,7 +17,6 @@ grow_vertical = 2
 size_flags_horizontal = 3
 script = ExtResource("1_melcq")
 DeleteTriggerButton = NodePath("HBoxContainer/DeleteButton")
-ToolButton = NodePath("HBoxContainer/SettingsButton")
 PlayRandomButton = NodePath("HBoxContainer/RandomButton")
 TriggerNameEdit = NodePath("HBoxContainer/TriggerEdit")
 SettingsButton = NodePath("HBoxContainer/SettingsButton")
