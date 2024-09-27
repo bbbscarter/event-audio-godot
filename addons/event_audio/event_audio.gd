@@ -23,14 +23,14 @@ class AudioEmitter2D:
     var player: AudioStreamPlayer2D
     var event: AudioBankEntry
 
-var _active_audio_2D = Array()
+var _active_emitters_2d = Array()
 
 class AudioEmitter3D:
     var source: Node3D
     var player: AudioStreamPlayer3D
     var event: AudioBankEntry
 
-var _active_audio_3D = Array()
+var _active_emitters_3d = Array()
 
 #---------------------------------------------------------
 func _enter_tree():
@@ -45,9 +45,15 @@ static func init_player_from_playback_settings(rng, stream_player, settings: Aud
     var pitch = rng.randf_range(min_pitch, max_pitch)
     stream_player.pitch_scale = pitch
     stream_player.volume_db = settings.volume_db
+    stream_player.panning_strength = settings.panning_strength
 
     if stream_player is AudioStreamPlayer3D:
         stream_player.unit_size = settings.unit_size
+        stream_player.max_db = settings.max_db
+    else:
+        stream_player.max_distance = settings.max_distance
+        stream_player.attenuation = settings.attenuation
+        
         
     
 func play_2d(trigger: String, source: Node2D) -> AudioEmitter2D:
@@ -59,22 +65,23 @@ func play_2d(trigger: String, source: Node2D) -> AudioEmitter2D:
     var stream = entry.get_weighted_random_stream(_rng.randf())    
     var stream_player = AudioStreamPlayer2D.new()
     stream_player.name = "AudioPlayback"
-    EventAudioAPI.init_player_from_playback_settings(_rng, stream_player, entry.playback_settings)
     add_child(stream_player)
     stream_player.stream = stream
+
+    EventAudioAPI.init_player_from_playback_settings(_rng, stream_player, entry.playback_settings)
 
     if source:
         stream_player.global_position = source.global_position
 
     stream_player.play()
     
-    var active_player := AudioEmitter2D.new()
-    active_player.player = stream_player
-    active_player.source = source
-    active_player.event = entry
-    _active_audio_2D.append(active_player)
+    var emitter := AudioEmitter2D.new()
+    emitter.player = stream_player
+    emitter.source = source
+    emitter.event = entry
+    _active_emitters_2d.append(emitter)
     
-    return active_player
+    return emitter
 
 func play_3d(trigger: String, source: Node3D) -> AudioEmitter3D:
     var entry := _find_entry_for_trigger(trigger)
@@ -93,13 +100,13 @@ func play_3d(trigger: String, source: Node3D) -> AudioEmitter3D:
     if source:
         stream_player.global_position = source.global_position
     
-    var active_player = AudioEmitter3D.new()
-    active_player.player = stream_player
-    active_player.source = source
-    active_player.event = entry
-    _active_audio_2D.append(active_player)
+    var emitter = AudioEmitter3D.new()
+    emitter.player = stream_player
+    emitter.source = source
+    emitter.event = entry
+    _active_emitters_3d.append(emitter)
     
-    return active_player
+    return emitter
 
 func stop(emitter):
     emitter.player.stop()
@@ -119,8 +126,8 @@ func unregister_bank_resource(bank: AudioBankResource):
         _invalidate_trigger_map()
 
 func _process(_delta: float):
-    _active_audio_2D = _process_active_audio(_active_audio_2D)
-    _active_audio_3D = _process_active_audio(_active_audio_3D) 
+    _active_emitters_2d = _process_active_audio(_active_emitters_2d)
+    _active_emitters_3d = _process_active_audio(_active_emitters_3d) 
 
 func _process_active_audio(active_audio):
     var new_active_audio := Array()

@@ -9,30 +9,18 @@
 [ext_resource type="AudioStream" uid="uid://cqo6bi2ygpwbu" path="res://addons/event_audio/example/sounds/shot1.wav" id="4_fpv34"]
 [ext_resource type="AudioStream" uid="uid://cultflwybpfo1" path="res://addons/event_audio/example/sounds/shot2.wav" id="5_1yf0v"]
 
-[sub_resource type="Resource" id="Resource_ljdcd"]
-script = ExtResource("2_po287")
-unit_size = 1.0
-volume_db = 0.0
-min_pitch = 0.8
-max_pitch = 1.2
-stop_when_source_dies = false
-stationary = false
-
-[sub_resource type="Resource" id="Resource_ps0cx"]
-script = ExtResource("1_y4jxi")
-audio_streams = Array[AudioStream]([ExtResource("2_fyotq")])
-probability_weights = Array[float]([1.0])
-trigger_tags = "loop"
-playback_settings = SubResource("Resource_ljdcd")
-
 [sub_resource type="Resource" id="Resource_dd35s"]
 script = ExtResource("2_po287")
-unit_size = 10.0
+stop_when_source_dies = false
+stationary = true
 volume_db = 0.0
 min_pitch = 0.8
 max_pitch = 1.2
-stop_when_source_dies = false
-stationary = false
+panning_strength = 1.0
+attenuation = 1.0
+max_distance = 2000
+unit_size = 10.0
+max_db = 3.0
 
 [sub_resource type="Resource" id="Resource_lfo5e"]
 script = ExtResource("1_y4jxi")
@@ -43,12 +31,16 @@ playback_settings = SubResource("Resource_dd35s")
 
 [sub_resource type="Resource" id="Resource_j54ca"]
 script = ExtResource("2_po287")
-unit_size = 10.0
+stop_when_source_dies = false
+stationary = true
 volume_db = 0.0
 min_pitch = 0.9
 max_pitch = 1.2
-stop_when_source_dies = false
-stationary = false
+panning_strength = 1.0
+attenuation = 1.0
+max_distance = 2000
+unit_size = 10.0
+max_db = 3.0
 
 [sub_resource type="Resource" id="Resource_d2op2"]
 script = ExtResource("1_y4jxi")
@@ -57,14 +49,38 @@ probability_weights = Array[float]([1.0])
 trigger_tags = "hit+large"
 playback_settings = SubResource("Resource_j54ca")
 
-[sub_resource type="Resource" id="Resource_1xrvu"]
+[sub_resource type="Resource" id="Resource_ljdcd"]
 script = ExtResource("2_po287")
-unit_size = 10.0
+stop_when_source_dies = false
+stationary = false
 volume_db = 0.0
 min_pitch = 0.8
 max_pitch = 1.2
+panning_strength = 2.0
+attenuation = 1.0
+max_distance = 2000
+unit_size = 10.0
+max_db = 3.0
+
+[sub_resource type="Resource" id="Resource_ps0cx"]
+script = ExtResource("1_y4jxi")
+audio_streams = Array[AudioStream]([ExtResource("2_fyotq")])
+probability_weights = Array[float]([1.0])
+trigger_tags = "loop"
+playback_settings = SubResource("Resource_ljdcd")
+
+[sub_resource type="Resource" id="Resource_1xrvu"]
+script = ExtResource("2_po287")
 stop_when_source_dies = false
-stationary = false
+stationary = true
+volume_db = 0.0
+min_pitch = 0.8
+max_pitch = 1.2
+panning_strength = 1.0
+attenuation = 1.0
+max_distance = 2000
+unit_size = 10.0
+max_db = 3.0
 
 [sub_resource type="Resource" id="Resource_xjlcv"]
 script = ExtResource("1_y4jxi")
@@ -75,4 +91,4 @@ playback_settings = SubResource("Resource_1xrvu")
 
 [resource]
 script = ExtResource("2_rbntb")
-entries = Array[ExtResource("1_y4jxi")]([SubResource("Resource_ps0cx"), SubResource("Resource_lfo5e"), SubResource("Resource_d2op2"), SubResource("Resource_xjlcv")])
+entries = Array[ExtResource("1_y4jxi")]([SubResource("Resource_lfo5e"), SubResource("Resource_d2op2"), SubResource("Resource_ps0cx"), SubResource("Resource_xjlcv")])

@@ -2,6 +2,7 @@
 extends EditorProperty
 
 class_name AudioBankResourceProperty
+
 var _audio_bank_line_scene = preload("res://addons/event_audio/scenes/bank_line.tscn")
 var _audio_bank_resource_line_scene = preload("res://addons/event_audio/scenes/bank_resource_line.tscn")
 
@@ -9,7 +10,7 @@ var _resource: AudioBankResource
 var _property_name: StringName
 var _entries: Array[AudioBankEntry]
 var _viewContainer := VBoxContainer.new()
-var _exclude_props = {"resource_local_to_scene": true, "resource_name": true, "script": true}
+var _exclude_props = {"resource_local_to_scene": true, "Resource": true, "resource_name": true, "script": true}
 var _settings_open = {}
 var _rng = RandomNumberGenerator.new()
 
@@ -74,7 +75,7 @@ func _toggle_settings_panel(entry: AudioBankEntry, entryLine: Container):
         entryLine.add_sibling(panel)
 
 func _make_settings_panel(entry : AudioBankEntry) -> Container:
-        return EventAudioEditorTools.make_property_panel(entry.playback_settings, _exclude_props, _on_settings_entry_changed)
+        return EventAudioEditorTools.make_property_panel(entry.playback_settings, "Playback Settings", _exclude_props, _on_settings_entry_changed)
     
 func _make_lines():
     var add_button = Button.new()
