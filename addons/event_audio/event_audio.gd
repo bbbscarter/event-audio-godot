@@ -60,7 +60,7 @@ func play_2d(trigger: String, source: Node2D) -> AudioEmitter2D:
 # func play_2d(trigger: String, source: Node2D) -> AudioStreamPlayer2D:
     var entry := _find_entry_for_trigger(trigger)
     if entry == null:
-        return
+        return null
 
     var stream = entry.get_weighted_random_stream(_rng.randf())    
     var stream_player = AudioStreamPlayer2D.new()
@@ -86,7 +86,7 @@ func play_2d(trigger: String, source: Node2D) -> AudioEmitter2D:
 func play_3d(trigger: String, source: Node3D) -> AudioEmitter3D:
     var entry := _find_entry_for_trigger(trigger)
     if entry == null:
-        return
+        return null
 
     var stream = entry.get_weighted_random_stream(_rng.randf())    
     var stream_player := AudioStreamPlayer3D.new()
