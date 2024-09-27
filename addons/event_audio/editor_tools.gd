@@ -92,12 +92,27 @@ static func _parse_range(prop) -> Dictionary:
     return prop_range
         
     
+static func _property_name_to_display_name(name: String):
+    var name_snake = name.to_snake_case()
+    var parts := name_snake.split("_")
+    var display_name := ""
+
+    for c1 : int in parts.size():
+        var part := parts[c1]
+        display_name += part.to_pascal_case()
+        if c1 < parts.size() - 1:
+            display_name += " "
+
+    return display_name
+
+    
 static func _make_property_editor(prop, initial_value, update_callback: Callable) -> Container:
     print(prop)
     var line_container = HBoxContainer.new()
     line_container.size_flags_horizontal = Control.SIZE_EXPAND_FILL
     var text_label = Label.new()
-    text_label.text = prop.name
+    text_label.text = _property_name_to_display_name(prop.name)
+
     text_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
     line_container.add_child(text_label)
 
