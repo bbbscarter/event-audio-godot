@@ -1,16 +1,17 @@
 [gd_scene load_steps=5 format=3 uid="uid://konnaekcsk2e"]
 
-[ext_resource type="Script" path="res://addons/event_audio/example/example_emitter.gd" id="1_7u4pm"]
+[ext_resource type="Script" path="res://addons/event_audio/example/example_emitter_2d.gd" id="1_7u4pm"]
 [ext_resource type="Script" path="res://addons/event_audio/audio_bank.gd" id="3_q1afy"]
 [ext_resource type="Resource" uid="uid://cfxmacq8po281" path="res://addons/event_audio/example/example_audio_bank.tres" id="4_rp3pw"]
 
 [sub_resource type="SphereMesh" id="SphereMesh_7scev"]
+radius = 10.0
+height = 20.0
 
 [node name="Example2d" type="Node2D"]
 
 [node name="Emitter" type="MeshInstance2D" parent="."]
 position = Vector2(2.08165e-12, 175.95)
-scale = Vector2(10, 10)
 mesh = SubResource("SphereMesh_7scev")
 script = ExtResource("1_7u4pm")
 

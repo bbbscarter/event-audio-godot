@@ -1,7 +1,7 @@
 [gd_resource type="Resource" script_class="AudioBankResource" load_steps=17 format=3 uid="uid://cfxmacq8po281"]
 
 [ext_resource type="Script" path="res://addons/event_audio/audio_bank_entry.gd" id="1_y4jxi"]
-[ext_resource type="AudioStream" uid="uid://7ncmg0ox4nxr" path="res://addons/event_audio/example/sounds/loop.wav" id="2_7uvbb"]
+[ext_resource type="AudioStream" uid="uid://7ncmg0ox4nxr" path="res://addons/event_audio/example/sounds/loop.wav" id="2_fyotq"]
 [ext_resource type="Script" path="res://addons/event_audio/audio_entry_playback_settings.gd" id="2_po287"]
 [ext_resource type="Script" path="res://addons/event_audio/audio_bank_resource.gd" id="2_rbntb"]
 [ext_resource type="AudioStream" uid="uid://byg26ypxea5qh" path="res://addons/event_audio/example/sounds/laser1.wav" id="3_nyuuq"]
@@ -11,7 +11,7 @@
 
 [sub_resource type="Resource" id="Resource_ljdcd"]
 script = ExtResource("2_po287")
-unit_size = 10.0
+unit_size = 1.0
 volume_db = 0.0
 min_pitch = 0.8
 max_pitch = 1.2
@@ -20,7 +20,7 @@ stationary = false
 
 [sub_resource type="Resource" id="Resource_ps0cx"]
 script = ExtResource("1_y4jxi")
-audio_streams = Array[AudioStream]([ExtResource("2_7uvbb")])
+audio_streams = Array[AudioStream]([ExtResource("2_fyotq")])
 probability_weights = Array[float]([1.0])
 trigger_tags = "loop"
 playback_settings = SubResource("Resource_ljdcd")
@@ -45,8 +45,8 @@ playback_settings = SubResource("Resource_dd35s")
 script = ExtResource("2_po287")
 unit_size = 10.0
 volume_db = 0.0
-min_pitch = 1.0
-max_pitch = 1.0
+min_pitch = 0.9
+max_pitch = 1.2
 stop_when_source_dies = false
 stationary = false
 
@@ -61,8 +61,8 @@ playback_settings = SubResource("Resource_j54ca")
 script = ExtResource("2_po287")
 unit_size = 10.0
 volume_db = 0.0
-min_pitch = 0.9
-max_pitch = 1.1
+min_pitch = 0.8
+max_pitch = 1.2
 stop_when_source_dies = false
 stationary = false
 

@@ -76,7 +76,7 @@ func play_2d(trigger: String, source: Node2D) -> AudioEmitter2D:
     
     return active_player
 
-func play_3d(trigger: String, source: Node3D) -> AudioStreamPlayer3D:
+func play_3d(trigger: String, source: Node3D) -> AudioEmitter3D:
     var entry := _find_entry_for_trigger(trigger)
     if entry == null:
         return

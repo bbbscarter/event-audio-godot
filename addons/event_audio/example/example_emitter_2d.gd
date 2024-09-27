@@ -1,6 +1,5 @@
 extends Node2D
-class_name ExampleEmitter
-#@onready var Audio = $"/root/Audio"
+class_name ExampleEmitter2D
 
 @export var Speed := 1.0
 var _loop_emitter : EventAudioAPI.AudioEmitter2D
@@ -19,7 +18,6 @@ func _process(delta: float):
         Speed = -Speed
         
     global_position = new_position
-
 
 func _input(event: InputEvent):
     if not event is InputEventKey or not event.is_pressed():

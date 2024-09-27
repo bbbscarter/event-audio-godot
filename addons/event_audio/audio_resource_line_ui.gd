@@ -3,26 +3,27 @@ extends Container
 class_name AudioResourceLineUI
 
 @export var Test : AudioStream
-# Called when the node enters the scene tree for the first time.
-var WeightEditor : EditorSpinSlider
-var AudioSelector : EditorResourcePicker
 @export var DeleteResourceButton : Button
 @export var AddResourceButton : Button
 @export var PlayButton : Button
 
+
+# Called when the node enters the scene tree for the first time.
+var WeightEditor : EditorSpinSlider
+var AudioSelector : EditorResourcePicker
+@export var AudioLabel : Label
+    
 func set_as_first_resource(on):
+    AddResourceButton.visible = true
     if on:
-        DeleteResourceButton.visible = false
-        AddResourceButton.visible = true
+        DeleteResourceButton.disabled = true
     else:
-        DeleteResourceButton.visible = true
-        AddResourceButton.visible = false
+        DeleteResourceButton.disabled = false
     
 func _init() -> void:
     var weight_editor := EditorSpinSlider.new()
     weight_editor.label = "weight"
-    # weight_editor.custom_minimum_size = Vector2(128, 32) 
-    weight_editor.step = 0.01
+    weight_editor.step = 0.05
     weight_editor.hide_slider = false
     weight_editor.allow_lesser = false
     weight_editor.allow_greater = false
@@ -30,30 +31,54 @@ func _init() -> void:
     weight_editor.max_value = 1.0
     weight_editor.size_flags_horizontal = Control.SIZE_EXPAND_FILL
     WeightEditor = weight_editor
-    # get_node("WeightSliderContainer").add_child(weight_editor)
 
     var resource_selector := EditorResourcePicker.new()
     resource_selector.size_flags_horizontal = Control.SIZE_EXPAND_FILL
     resource_selector.base_type = "AudioStream"
-    # resource_selector.custom_minimum_size = Vector2(0, 0)
-    #resource_selector.toggle_mode = true
-    resource_selector.editable = true
-    # resource_selector.toggle_mode = true
-    # get_node("ResourcePickerContainer").add_child(resource_selector)
+
+    resource_selector.resource_changed.connect(_on_resource_changed)
+    resource_selector.resource_selected.connect(_on_resource_clicked)
+
     AudioSelector = resource_selector
+    
+func _on_resource_clicked(res: Resource, _inspect: bool):
+    # When the resource picker is clicked, visit the resource.
+    # Do it the next frame, however, in case the controls are being updated.
+    if res != null:
+        await get_tree().process_frame
+        EditorInterface.edit_resource(res)
+    
+func _on_resource_changed(_res: Resource):
+    _make_audio_picker_pretty()
+    
+func _make_audio_picker_pretty():
+    # If no resource, show the default button text
+    # Otherwise, show the file name
+    var res := AudioSelector.edited_resource
+    if res == null:
+        AudioLabel.visible = false
+    else:
+        if FileAccess.file_exists(res.resource_path):
+            AudioLabel.text = res.resource_path.get_file()
+            AudioLabel.visible = true
+        else:
+            AudioLabel.text = res.get_class()
+            # TODO - can't tell when the button is rendering at the moment.
+            # Until we can, make the label invisible
+            AudioLabel.visible = false
+        
+    
+    # This is the only way I can find to get the ResourcePicker smaller
+    # Detach the texture rect that shows the preview
+    var children := AudioSelector.get_children()
+    while not children.is_empty():
+        var child = children.pop_back()
+        children.append_array(child.get_children())
+        if child is TextureRect:
+            child.get_parent().remove_child(child)
 
 func _ready() -> void:
-    # print("Enter tree")
     get_node("WeightSliderContainer").add_child(WeightEditor)
-    get_node("ResourcePickerContainer").add_child(AudioSelector)
+    get_node("ResourcePicker/ResourcePickerContainer").add_child(AudioSelector)
 
-    ## This is the only way I can find to get the 
-    # for c in AudioSelector.get_children():
-    #     print (c.name)
-    #     c.custom_minimum_size = Vector2(0, 0)
-    #     for cc in c.get_children():
-    #         c.custom_minimum_size = Vector2(0, 0)
-    #         # if cc is TextureRect:
-    #         #     cc.free()
-    #             # cc.visible = false
-    #         # print (cc.name)
+    _make_audio_picker_pretty()
