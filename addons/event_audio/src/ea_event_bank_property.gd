@@ -30,6 +30,10 @@ func _update_property():
     print("updating property")
     for i in _root_container.get_children():
         _root_container.remove_child(i)
+        i.queue_free()
+
+    for k in _settings_open:
+        _settings_open[k] = null
 
     _make_lines()
 
@@ -44,7 +48,6 @@ func _update_property():
             continue
         var line = control as EAEventEditControl
         if line.trigger_name_edit.text == _focus_on_trigger:
-            print("found " + _focus_on_trigger)
             EditorInterface.get_inspector().ensure_control_visible(line.trigger_name_edit)
             break
 
@@ -66,15 +69,18 @@ func _exit_tree() -> void:
     EAEditorTools.stop_sound()
 
 #--------------------------------------
-func _add_settings_panel_maybe(entry: EAEvent, entryLine: Container):
+func _restore_settings_panel_maybe(entry: EAEvent, entryLine: Container):
     if entry in _settings_open:
         var panel := _make_settings_panel(entry)
         entryLine.add_sibling(panel)
+        _settings_open[entry] = panel
 
 func _toggle_settings_panel(entry: EAEvent, entryLine: Container):
     if entry in _settings_open:
         var panel = _settings_open[entry]
-        panel.get_parent().remove_child(panel)
+        if panel != null:
+            panel.get_parent().remove_child(panel)
+            panel.queue_free()
         _settings_open.erase(entry)
     else:
         var panel := _make_settings_panel(entry)
@@ -100,7 +106,7 @@ func _make_lines():
     for entry in _resource.entries:
         var entryLine = _makeEntryLine(entry)
         _root_container.add_child(entryLine)
-        _add_settings_panel_maybe(entry, entryLine)
+        _restore_settings_panel_maybe(entry, entryLine)
 
 func _makeEntryLine(entry: EAEvent) -> Container:
     var line := _audio_bank_line_scene.instantiate() as EAEventEditControl
