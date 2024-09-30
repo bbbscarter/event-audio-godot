@@ -1,8 +1,13 @@
 class_name 	EAEditorTools
-
 static var _editor_stream_player : AudioStreamPlayer
+static var _global_rng : RandomNumberGenerator
 
-static func play_sound(entry: EAEvent, stream: AudioStream, rng):
+static func get_global_rng() -> RandomNumberGenerator:
+    if _global_rng == null:
+        _global_rng = RandomNumberGenerator.new()
+    return _global_rng
+    
+static func play_sound(entry: EAEvent, stream: AudioStream):
     var main_screen = EditorInterface.get_editor_main_screen()
     var audio = _editor_stream_player
     if audio == null:
@@ -11,14 +16,14 @@ static func play_sound(entry: EAEvent, stream: AudioStream, rng):
         main_screen.add_child(audio)
         _editor_stream_player = audio
 
-    EventAudioAPI.init_player_from_playback_settings(rng, audio, entry.playback_settings)
+    EventAudioAPI.init_player_from_playback_settings(get_global_rng(), audio, entry.playback_settings)
 
     audio.stop()
     audio.stream = stream
     audio.play()
 
 static func stop_sound():
-    var audio = _editor_stream_player
+    var audio := _editor_stream_player
     if audio != null:
         print("Stopping audio")
         audio.stop()
@@ -29,7 +34,7 @@ static func make_property_panel(obj: Object, title: String, excludes : Dictionar
     panel.size_flags_horizontal = Control.SIZE_EXPAND_FILL
     panel.modulate = Color(0.8, 0.8, 1)
 
-    var property_container = VBoxContainer.new()
+    var property_container := VBoxContainer.new()
     property_container.size_flags_horizontal = Control.SIZE_EXPAND_FILL
     panel.add_child(property_container)
     
@@ -139,7 +144,7 @@ static func _parse_range(prop) -> Dictionary:
     if prop["hint"] != PROPERTY_HINT_RANGE:
         return {}
 
-    var prop_range = {}
+    var prop_range := {}
     var parts := prop["hint_string"].split(",") as PackedStringArray
     var is_float : bool = prop["type"] == TYPE_FLOAT
 
@@ -181,7 +186,7 @@ static func _parse_range(prop) -> Dictionary:
         
     
 static func _property_name_to_display_name(name: String):
-    var name_snake = name.to_snake_case()
+    var name_snake := name.to_snake_case()
     var parts := name_snake.split("_")
     var display_name := ""
 

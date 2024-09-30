@@ -9,14 +9,42 @@ class_name EAStreamEditControl
 var weight_editor : EditorSpinSlider
 var audio_selector : EditorResourcePicker
     
-func set_as_primary_stream(on):
+var _stream_id : int
+var _event : EAEvent
+var _bank_inspector : EAEventBankProperty
+
+func create(bank_inspector: EAEventBankProperty, event: EAEvent, stream_id: int, primary: bool) -> void:
     # When this is the primary resource, we don't want to delete it.
     # add_stream_button.visible = true
-    if on:
+    _stream_id = stream_id
+    _event = event
+    _bank_inspector = bank_inspector
+
+    if primary:
         delete_event_button.disabled = true
     else:
         delete_event_button.disabled = false
     
+    play_button.pressed.connect(_on_play_button_clicked)
+
+    audio_selector.resource_changed.connect(_on_stream_changed)
+    audio_selector.edited_resource = _event.audio_streams[_stream_id]
+        
+    add_stream_button.pressed.connect(_on_add_resource_button_clicked)
+    delete_event_button.pressed.connect(_on_delete_resource_button_clicked)
+
+    weight_editor.value_changed.connect(_on_stream_weight_changed)
+    weight_editor.value = _event.probability_weights[_stream_id]
+    _make_audio_picker_pretty()
+
+func _ready() -> void:
+    get_node("WeightSliderContainer").add_child(weight_editor)
+    get_node("ResourcePicker/ResourcePickerContainer").add_child(audio_selector)
+    # if _event:
+    #     audio_selector.edited_resource = _event.audio_streams[_stream_id]
+
+    _make_audio_picker_pretty()
+
 func _init() -> void:
     weight_editor = EditorSpinSlider.new()
     weight_editor.label = "weight"
@@ -31,9 +59,11 @@ func _init() -> void:
     audio_selector = EditorResourcePicker.new()
     audio_selector.size_flags_horizontal = Control.SIZE_EXPAND_FILL
     audio_selector.base_type = "AudioStream"
+    # audio_selector.edited_resource = _event.audio_streams[_stream_id]
 
     audio_selector.resource_changed.connect(_on_resource_changed)
     audio_selector.resource_selected.connect(_on_resource_clicked)
+
     
 func _on_resource_clicked(res: Resource, _inspect: bool):
     # When the resource picker is clicked, visit the resource.
@@ -74,13 +104,28 @@ func _make_audio_picker_pretty():
     # Search for the texture rect that shows the preview and detach it.
     var children := audio_selector.get_children()
     while not children.is_empty():
-        var child = children.pop_back()
+        var child := children.pop_back() as Node
         children.append_array(child.get_children())
         if child is TextureRect:
             child.get_parent().remove_child(child)
 
-func _ready() -> void:
-    get_node("WeightSliderContainer").add_child(weight_editor)
-    get_node("ResourcePicker/ResourcePickerContainer").add_child(audio_selector)
+func _on_play_button_clicked():
+    var stream := _event.audio_streams[_stream_id]
+    if stream:
+        EAEditorTools.play_sound(_event, stream)
 
-    _make_audio_picker_pretty()
+func _on_stream_weight_changed(val):
+    _event.probability_weights[_stream_id] = val
+    _bank_inspector.signal_entry_changed(false)
+
+func _on_add_resource_button_clicked():
+    _event.add_stream(_stream_id)
+    _bank_inspector.signal_entry_changed(true)
+
+func _on_delete_resource_button_clicked():
+    _event.remove_stream(_stream_id)
+    _bank_inspector.signal_entry_changed(true)
+
+func _on_stream_changed(res: Resource):
+    _event.audio_streams[_stream_id] = res as AudioStream
+    _bank_inspector.signal_entry_changed(false)
