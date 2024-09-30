@@ -2,15 +2,13 @@ extends Node
 
 # Ideally this would be called just EventAudio, but that would class with the autoload
 class_name EventAudioAPI
-
-var _audio_banks: Array[EAEventBank]
-@export var log_lookups: bool = true
-@export var log_deaths: bool = true
-@export var log_registrations: bool = true
-@export var default_unit_size := 10.0
-
 static var _separator := "+"
 static var instance : EventAudioAPI
+
+var _audio_banks: Array[EAEventBank]
+@export var log_lookups := false
+@export var log_deaths := false
+@export var log_registrations := false
 
 var _trigger_map: Dictionary
 var _rng: RandomNumberGenerator
@@ -57,70 +55,60 @@ static func init_player_from_playback_settings(rng, stream_player, settings: EAE
         stream_player.panning_strength = settings.panning_strength
 
         
-        
+func _play_event(event: EAEvent, stream_player, source: Node):
+    var stream = event.get_weighted_random_stream(_rng.randf())    
+    stream_player.name = "AudioPlayback"
+    add_child(stream_player)
+    stream_player.stream = stream
+
+    EventAudioAPI.init_player_from_playback_settings(_rng, stream_player, event.playback_settings)
+
+    if source:
+        stream_player.global_position = source.global_position
+
+    stream_player.play()
+    
+    if stream_player is AudioStreamPlayer2D:
+        var emitter := AudioEmitter2D.new()
+        emitter.player = stream_player
+        emitter.source = source
+        emitter.event = event
+        _active_emitters_2d.append(emitter)
+        return emitter
+    else:
+        var emitter = AudioEmitter3D.new()
+        emitter.player = stream_player
+        emitter.source = source
+        emitter.event = event
+        _active_emitters_3d.append(emitter)
+        return emitter
     
 func play_2d(trigger: String, source: Node2D) -> AudioEmitter2D:
-# func play_2d(trigger: String, source: Node2D) -> AudioStreamPlayer2D:
-    var entry := _find_entry_for_trigger(trigger)
-    if entry == null:
+    var event := _find_event_for_trigger(trigger)
+    if event == null:
         return null
 
-    var stream = entry.get_weighted_random_stream(_rng.randf())    
     var stream_player = AudioStreamPlayer2D.new()
-    stream_player.name = "AudioPlayback"
-    add_child(stream_player)
-    stream_player.stream = stream
-
-    EventAudioAPI.init_player_from_playback_settings(_rng, stream_player, entry.playback_settings)
-
-    if source:
-        stream_player.global_position = source.global_position
-
-    stream_player.play()
-    
-    var emitter := AudioEmitter2D.new()
-    emitter.player = stream_player
-    emitter.source = source
-    emitter.event = entry
-    _active_emitters_2d.append(emitter)
-    
-    return emitter
+    return _play_event(event, stream_player, source)
 
 func play_3d(trigger: String, source: Node3D) -> AudioEmitter3D:
-    var entry := _find_entry_for_trigger(trigger)
-    if entry == null:
+    var event := _find_event_for_trigger(trigger)
+    if event == null:
         return null
 
-    var stream = entry.get_weighted_random_stream(_rng.randf())    
-    var stream_player := AudioStreamPlayer3D.new()
-    stream_player.name = "AudioPlayback"
-    EventAudioAPI.init_player_from_playback_settings(_rng, stream_player, entry.playback_settings)
-    add_child(stream_player)
-    stream_player.stream = stream
-    # stream_player.attenuation_model = AudioStreamPlayer3D.ATTENUATION_INVERSE_SQUARE_DISTANCE
-    stream_player.play()
-
-    if source:
-        stream_player.global_position = source.global_position
-    
-    var emitter = AudioEmitter3D.new()
-    emitter.player = stream_player
-    emitter.source = source
-    emitter.event = entry
-    _active_emitters_3d.append(emitter)
-    
-    return emitter
+    var stream_player = AudioStreamPlayer3D.new()
+    return _play_event(event, stream_player, source)
 
 func stop(emitter):
     emitter.player.stop()
 
-func register_bank_resource(bank: EAEventBank):
+func register_event_bank(bank: EAEventBank):
     if log_registrations:
-        print("Registering bank: " + bank.resource_name)
+        print("Registering bank: " + bank.resource_path)
     _audio_banks.append(bank)
     _invalidate_trigger_map()
     
-func unregister_bank_resource(bank: EAEventBank):
+func unregister_event_bank(bank: EAEventBank):
     if log_registrations:
         print("Unregistering bank: " + bank.resource_name)
     var idx := _audio_banks.find(bank)
@@ -128,6 +116,7 @@ func unregister_bank_resource(bank: EAEventBank):
         _audio_banks.remove_at(idx)
         _invalidate_trigger_map()
 
+#---------------------------------------------------------------------------------
 func _process(_delta: float):
     _active_emitters_2d = _process_active_audio(_active_emitters_2d)
     _active_emitters_3d = _process_active_audio(_active_emitters_3d) 
@@ -135,6 +124,7 @@ func _process(_delta: float):
 func _process_active_audio(active_audio):
     var new_active_audio := Array()
 
+    # TODO - find a better way of modifying the list of active audio emitters
     for audio in active_audio:
         var alive := true
         if audio.player == null:
@@ -171,7 +161,7 @@ func _make_trigger_map():
             var key = entry.trigger_tags
             _trigger_map[key] = entry
 
-func _find_entry_for_trigger(trigger: String) -> EAEvent:
+func _find_event_for_trigger(trigger: String) -> EAEvent:
     if _trigger_map.size() == 0:
         _make_trigger_map()
         
@@ -191,10 +181,10 @@ func _find_entry_for_trigger(trigger: String) -> EAEvent:
     return null
     
 func get_random_str_for_trigger(trigger: String) -> AudioStream:
-    var entry := _find_entry_for_trigger(trigger)
+    var event := _find_event_for_trigger(trigger)
     
-    if entry:
-        return entry.audioStreams[0]
+    if event:
+        return event.audioStreams[0]
     return null
 
 func _log_lookup(msg: String):

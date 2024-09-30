@@ -5,14 +5,9 @@ class_name EAEventBankMounter
 
 func _enter_tree():
     var player = EventAudio.instance
-    player.register_bank_resource(_audio_bank_resource)
-    # for bank_resource: EAEventBank in audioBankResources:
-    #     player.register_bank_resource(bank_resource)
+    player.register_event_bank(_audio_bank_resource)
             
 func _exit_tree():
     var player = EventAudio.instance
-    player.unregister_bank_resource(_audio_bank_resource)
-
-    # for bank_resource: EAEventBank in audioBankResources:
-    #     player.unregister_bank_resource(bank_resource)
+    player.unregister_event_bank(_audio_bank_resource)
     
