@@ -21,12 +21,6 @@ var _focus_on_trigger : String = ""
 #----------------------------------------------
 # Godot call to update rendering
 func _update_property():
-    # If the rendering has already been handled, don't do anything else.
-    if _internal_update > 0:
-        print("skipping updating property")
-        _internal_update -= 1
-        return
-
     print("updating property")
     for i in _root_container.get_children():
         _root_container.remove_child(i)
@@ -135,26 +129,27 @@ func _makeEntryLine(entry: EAEvent) -> Container:
         resource_line.delete_event_button.pressed.connect(_on_delete_resource_button_clicked.bind(c1, entry))
 
     return line
-    
+
+func signal_entry_changed(update_ui: bool):
+    emit_changed(_property_name, _entries, "", not update_ui)
 
 func _on_settings_button_clicked(line: Container, entry: EAEvent):
     _toggle_settings_panel(entry, line)
 
 func _on_settings_entry_changed(val, settings: EAEventPlaybackSettings, member: StringName):
     settings.set(member, val)
-    _internal_update += 1
-    emit_changed(_property_name, _entries)
+    signal_entry_changed(false)
     
 func _on_add_entry_button_clicked():
     _resource.add_entry()
-    emit_changed(_property_name, _entries)
+    signal_entry_changed(true)
 
 func _on_stop_button_clicked():
     EAEditorTools.stop_sound()
 
 func _on_delete_entry_button_clicked(entry: EAEvent):
     _resource.delete_entry(entry)
-    emit_changed(_property_name, _entries)
+    signal_entry_changed(true)
 
 func _on_play_button_clicked(index: int, entry: EAEvent):
     var stream := entry.audio_streams[index]
@@ -169,16 +164,15 @@ func _on_play_random_button_clicked(entry: EAEvent):
 
 func _on_stream_weight_changed(val, index: int, entry: EAEvent):
     entry.probability_weights[index] = val
-    _internal_update += 1
-    emit_changed(_property_name, _entries)
+    signal_entry_changed(false)
 
 func _on_add_resource_button_clicked(index: int, entry: EAEvent):
     entry.add_stream(index)
-    emit_changed(_property_name, _entries)
+    signal_entry_changed(true)
 
 func _on_delete_resource_button_clicked(index: int, entry: EAEvent):
     entry.remove_stream(index)
-    emit_changed(_property_name, _entries)
+    signal_entry_changed(true)
 
 func _check_trigger_name(entry: EAEvent, trigger: String) -> bool:
     var bank_entry := _resource.find_entry_with_trigger(trigger)
@@ -203,12 +197,11 @@ func _on_trigger_submitted(trigger: String, entry: EAEvent, text_label):
         # Re-sort the bank - this may trigger a UI update, so make sure we focus on the right control
         _sort_bank()
         _focus_on_trigger = trigger
-        emit_changed(_property_name, _entries)
+        signal_entry_changed(true)
 
 func _on_stream_changed(res: Resource, idx: int, entry: EAEvent):
     entry.audio_streams[idx] = res as AudioStream
-    _internal_update += 1
-    emit_changed(_property_name, _entries)
+    signal_entry_changed(false)
 
 
 func _sort_bank():
