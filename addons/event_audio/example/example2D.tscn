@@ -1,8 +1,9 @@
-[gd_scene load_steps=5 format=3 uid="uid://konnaekcsk2e"]
+[gd_scene load_steps=6 format=3 uid="uid://konnaekcsk2e"]
 
 [ext_resource type="Script" path="res://addons/event_audio/example/example_emitter_2d.gd" id="1_7u4pm"]
+[ext_resource type="Resource" uid="uid://cfxmacq8po281" path="res://addons/event_audio/example/example_audio_bank.tres" id="3_kb4ey"]
 [ext_resource type="Script" path="res://addons/event_audio/src/ea_event_bank_mounter.gd" id="3_q1afy"]
-[ext_resource type="Resource" uid="uid://cfxmacq8po281" path="res://addons/event_audio/example/example_audio_bank.tres" id="4_rp3pw"]
+[ext_resource type="PackedScene" uid="uid://kjsaalyhmkc5" path="res://addons/event_audio/example/example_ui.tscn" id="4_kisj8"]
 
 [sub_resource type="SphereMesh" id="SphereMesh_7scev"]
 radius = 10.0
@@ -23,4 +24,10 @@ current = true
 
 [node name="TestAudioBank" type="Node" parent="."]
 script = ExtResource("3_q1afy")
-_audioBankResource = ExtResource("4_rp3pw")
+_audio_bank_resource = ExtResource("3_kb4ey")
+
+[node name="AudioStreamPlayer2D" type="AudioStreamPlayer2D" parent="."]
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="ExampleUi" parent="CanvasLayer" instance=ExtResource("4_kisj8")]

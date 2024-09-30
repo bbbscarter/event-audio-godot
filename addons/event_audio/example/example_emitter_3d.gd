@@ -6,6 +6,11 @@ class_name ExampleEmitter3D
 var _loop_emitter : EventAudioAPI.AudioEmitter3D
 var _orbit_radius := 1.0
 
+func _init():
+    EventAudio.log_lookups = true
+    EventAudio.log_registrations = true
+    EventAudio.log_deaths = true
+    
 func _ready():
     _orbit_radius = (global_position - OrbitNode.global_position).length()
     

@@ -4,6 +4,11 @@ class_name ExampleEmitter2D
 @export var Speed := 1.0
 var _loop_emitter : EventAudioAPI.AudioEmitter2D
 
+func _init():
+    EventAudio.log_lookups = true
+    EventAudio.log_registrations = true
+    EventAudio.log_deaths = true
+    
 func _process(delta: float):
     var screen_width := get_viewport_rect().size.x
 

@@ -1,0 +1,24 @@
+[gd_scene format=3 uid="uid://kjsaalyhmkc5"]
+
+[node name="ExampleUi" type="Control"]
+layout_mode = 3
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+grow_vertical = 0
+
+[node name="Label" type="Label" parent="."]
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_top = -127.0
+offset_right = 196.0
+grow_vertical = 0
+text = "1 - Play \"hit\"
+2 - Play \"hit+large\"
+3 - Play \"hit+nonexistent\"
+4 - Play \"random_shoot\"
+5 - Toggle \"loop\""
+vertical_alignment = 2
+justification_flags = 161

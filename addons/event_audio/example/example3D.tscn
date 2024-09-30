@@ -1,16 +1,13 @@
-[gd_scene load_steps=5 format=3 uid="uid://b12tpedbx38u7"]
+[gd_scene load_steps=6 format=3 uid="uid://b12tpedbx38u7"]
 
 [ext_resource type="Script" path="res://addons/event_audio/src/ea_event_bank_mounter.gd" id="1_ncilt"]
-[ext_resource type="Resource" uid="uid://cfxmacq8po281" path="res://addons/event_audio/example/example_audio_bank.tres" id="2_xykjt"]
+[ext_resource type="Resource" uid="uid://cfxmacq8po281" path="res://addons/event_audio/example/example_audio_bank.tres" id="2_nj06b"]
 [ext_resource type="Script" path="res://addons/event_audio/example/example_emitter_3d.gd" id="3_wpepl"]
+[ext_resource type="PackedScene" uid="uid://kjsaalyhmkc5" path="res://addons/event_audio/example/example_ui.tscn" id="4_sw6y2"]
 
 [sub_resource type="SphereMesh" id="SphereMesh_3bdsu"]
 
 [node name="Example3d" type="Node3D"]
-
-[node name="TestAudioBank" type="Node" parent="."]
-script = ExtResource("1_ncilt")
-_audioBankResource = ExtResource("2_xykjt")
 
 [node name="Camera3D" type="Camera3D" parent="."]
 
@@ -24,3 +21,11 @@ mesh = SubResource("SphereMesh_3bdsu")
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 0.176947, 0.98422, 0, -0.98422, 0.176947, 0, 1.9958, 0)
+
+[node name="TestAudioBank" type="Node" parent="."]
+script = ExtResource("1_ncilt")
+_audio_bank_resource = ExtResource("2_nj06b")
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="ExampleUi" parent="CanvasLayer" instance=ExtResource("4_sw6y2")]
