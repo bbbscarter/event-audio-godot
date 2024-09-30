@@ -9,7 +9,7 @@ var _audio_bank_resource_line_scene = preload("res://addons/event_audio/scenes/b
 var _resource: EAEventBank
 var _property_name: StringName
 var _entries: Array[EAEvent]
-var _viewContainer := VBoxContainer.new()
+var _root_container := VBoxContainer.new()
 var _exclude_props = {"resource_local_to_scene": true, "Resource": true, "resource_name": true, "script": true}
 var _settings_open = {}
 var _rng = RandomNumberGenerator.new()
@@ -28,8 +28,8 @@ func _update_property():
         return
 
     print("updating property")
-    for i in _viewContainer.get_children():
-        _viewContainer.remove_child(i)
+    for i in _root_container.get_children():
+        _root_container.remove_child(i)
 
     _make_lines()
 
@@ -39,13 +39,13 @@ func _update_property():
 
     await get_tree().process_frame
 
-    for control : Control in _viewContainer.get_children():
+    for control : Control in _root_container.get_children():
         if control is not EAEventEditControl:
             continue
         var line = control as EAEventEditControl
-        if line.TriggerNameEdit.text == _focus_on_trigger:
+        if line.trigger_name_edit.text == _focus_on_trigger:
             print("found " + _focus_on_trigger)
-            EditorInterface.get_inspector().ensure_control_visible(line.TriggerNameEdit)
+            EditorInterface.get_inspector().ensure_control_visible(line.trigger_name_edit)
             break
 
     _focus_on_trigger = ""
@@ -56,11 +56,11 @@ func _enter_tree():
     _resource = get_edited_object() as EAEventBank
     _entries = _resource.entries
 
-    _viewContainer.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+    _root_container.size_flags_horizontal = Control.SIZE_EXPAND_FILL
         
     _make_lines()
-    add_child(_viewContainer)
-    set_bottom_editor(_viewContainer)
+    add_child(_root_container)
+    set_bottom_editor(_root_container)
 
 func _exit_tree() -> void:
     EAEditorTools.stop_sound()
@@ -89,44 +89,44 @@ func _make_lines():
     add_button.text = "Add Entry"
     add_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
     add_button.pressed.connect(_on_add_entry_button_clicked)
-    _viewContainer.add_child(add_button)
+    _root_container.add_child(add_button)
 
     var stop_button = Button.new()
     stop_button.text = "Stop playback"
     stop_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
     stop_button.pressed.connect(_on_stop_button_clicked)
-    _viewContainer.add_child(stop_button)
+    _root_container.add_child(stop_button)
 
     for entry in _resource.entries:
         var entryLine = _makeEntryLine(entry)
-        _viewContainer.add_child(entryLine)
+        _root_container.add_child(entryLine)
         _add_settings_panel_maybe(entry, entryLine)
 
 func _makeEntryLine(entry: EAEvent) -> Container:
     var line := _audio_bank_line_scene.instantiate() as EAEventEditControl
-    line.DeleteTriggerButton.pressed.connect(_on_delete_entry_button_clicked.bind(entry))
-    line.TriggerNameEdit.set_text(entry.trigger_tags)
-    line.TriggerNameEdit.text_submitted.connect(_on_trigger_submitted.bind(entry, line.TriggerNameEdit))
-    line.TriggerNameEdit.text_changed.connect(_on_trigger_changed.bind(entry, line.TriggerNameEdit))
-    line.SettingsButton.pressed.connect(_on_settings_button_clicked.bind(line, entry))
-    line.PlayRandomButton.pressed.connect(_on_play_random_button_clicked.bind(entry))
+    line.delete_trigger_button.pressed.connect(_on_delete_entry_button_clicked.bind(entry))
+    line.trigger_name_edit.set_text(entry.trigger_tags)
+    line.trigger_name_edit.text_submitted.connect(_on_trigger_submitted.bind(entry, line.trigger_name_edit))
+    line.trigger_name_edit.text_changed.connect(_on_trigger_changed.bind(entry, line.trigger_name_edit))
+    line.settings_button.pressed.connect(_on_settings_button_clicked.bind(line, entry))
+    line.play_random_button.pressed.connect(_on_play_random_button_clicked.bind(entry))
 
     for c1: int in entry.audio_streams.size():
         var resource_line := _audio_bank_resource_line_scene.instantiate() as EAStreamEditControl
-        line.ResourceList.add_child(resource_line)
-        resource_line.set_as_first_resource(entry.audio_streams.size() == 1)
+        line.stream_settings_list.add_child(resource_line)
+        resource_line.set_as_primary_stream(entry.audio_streams.size() == 1)
 
-        resource_line.PlayButton.pressed.connect(_on_play_button_clicked.bind(c1, entry))
+        resource_line.play_button.pressed.connect(_on_play_button_clicked.bind(c1, entry))
 
-        resource_line.WeightEditor.value_changed.connect(_on_stream_weight_changed.bind(c1, entry))
-        resource_line.WeightEditor.value = entry.probability_weights[c1]
+        resource_line.weight_editor.value_changed.connect(_on_stream_weight_changed.bind(c1, entry))
+        resource_line.weight_editor.value = entry.probability_weights[c1]
 
-        resource_line.AudioSelector.edited_resource = entry.audio_streams[c1]
-        resource_line.AudioSelector.resource_changed.connect(_on_stream_changed.bind(c1, entry))
+        resource_line.audio_selector.edited_resource = entry.audio_streams[c1]
+        resource_line.audio_selector.resource_changed.connect(_on_stream_changed.bind(c1, entry))
         
-        resource_line.AddResourceButton.pressed.connect(_on_add_resource_button_clicked.bind(c1, entry))
+        resource_line.add_stream_button.pressed.connect(_on_add_resource_button_clicked.bind(c1, entry))
 
-        resource_line.DeleteResourceButton.pressed.connect(_on_delete_resource_button_clicked.bind(c1, entry))
+        resource_line.delete_event_button.pressed.connect(_on_delete_resource_button_clicked.bind(c1, entry))
 
     return line
     
