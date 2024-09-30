@@ -85,8 +85,8 @@ max_db = 3.0
 [sub_resource type="Resource" id="Resource_xjlcv"]
 script = ExtResource("1_fy8lm")
 audio_streams = Array[AudioStream]([ExtResource("3_nyuuq"), ExtResource("4_ahbca")])
-probability_weights = Array[float]([0.15, 1.0])
-trigger_tags = "shoot"
+probability_weights = Array[float]([1.0, 1.0])
+trigger_tags = "random_shoot"
 playback_settings = SubResource("Resource_1xrvu")
 
 [resource]

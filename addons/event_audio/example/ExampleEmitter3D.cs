@@ -40,10 +40,14 @@ public partial class ExampleEmitter3D : Node3D {
     }
 
     if (ev.Keycode == Key.Key3) {
-      EventAudio.Instance.Play3D("shoot+laser", this);
+      EventAudio.Instance.Play3D("hit+nonexistent", this);
+    }
+
+    if (ev.Keycode == Key.Key4) {
+      EventAudio.Instance.Play3D("random_shoot", this);
     }
         
-    if (ev.Keycode == Key.Key4) {
+    if (ev.Keycode == Key.Key5) {
       if (_loopEmitter != null) {
         EventAudio.Instance.Stop(_loopEmitter);
         _loopEmitter = null;

@@ -30,9 +30,12 @@ func _input(event: InputEvent):
         EventAudio.play_2d("hit+large", self)
 
     if event.keycode == KEY_3:
-        EventAudio.play_2d("shoot+laser", self)
-        
+        EventAudio.play_2d("hit+nonexistent", self)
+
     if event.keycode == KEY_4:
+        EventAudio.play_2d("random_shoot", self)
+        
+    if event.keycode == KEY_5:
         if _loop_emitter:
             EventAudio.stop(_loop_emitter)
             _loop_emitter = null
