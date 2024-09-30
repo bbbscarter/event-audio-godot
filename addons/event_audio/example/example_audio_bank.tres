@@ -1,9 +1,9 @@
 [gd_resource type="Resource" script_class="EAEventBank" load_steps=17 format=3 uid="uid://cfxmacq8po281"]
 
-[ext_resource type="Script" path="res://addons/event_audio/ea_event.gd" id="1_fy8lm"]
+[ext_resource type="Script" path="res://addons/event_audio/src/ea_event.gd" id="1_fy8lm"]
 [ext_resource type="AudioStream" uid="uid://7ncmg0ox4nxr" path="res://addons/event_audio/example/sounds/loop.wav" id="2_fyotq"]
-[ext_resource type="Script" path="res://addons/event_audio/ea_event_bank.gd" id="2_rbntb"]
-[ext_resource type="Script" path="res://addons/event_audio/ea_event_playback_settings.gd" id="3_fy5gc"]
+[ext_resource type="Script" path="res://addons/event_audio/src/ea_event_bank.gd" id="2_rbntb"]
+[ext_resource type="Script" path="res://addons/event_audio/src/ea_event_playback_settings.gd" id="3_fy5gc"]
 [ext_resource type="AudioStream" uid="uid://byg26ypxea5qh" path="res://addons/event_audio/example/sounds/laser1.wav" id="3_nyuuq"]
 [ext_resource type="AudioStream" uid="uid://ftyi4ikfmbii" path="res://addons/event_audio/example/sounds/laser2.wav" id="4_ahbca"]
 [ext_resource type="AudioStream" uid="uid://cqo6bi2ygpwbu" path="res://addons/event_audio/example/sounds/shot1.wav" id="4_fpv34"]

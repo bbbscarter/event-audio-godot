@@ -1,7 +1,7 @@
 @tool
 extends EditorPlugin
 
-var _editor_plugin = preload("res://addons/event_audio/ea_event_bank_inspector.gd").new()
+var _editor_plugin = preload("res://addons/event_audio/src/ea_event_bank_inspector.gd").new()
 var _runtime_scene = "res://addons/event_audio/scenes/event_audio_autoload.tscn"
 
 func _enter_tree():

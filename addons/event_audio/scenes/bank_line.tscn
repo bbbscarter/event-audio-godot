@@ -1,7 +1,7 @@
 [gd_scene load_steps=6 format=3 uid="uid://co2eglljfwoxo"]
 
 [ext_resource type="Texture2D" uid="uid://pad8hlsq2shw" path="res://addons/event_audio/icons/Close.svg" id="1_2kmlt"]
-[ext_resource type="Script" path="res://addons/event_audio/ea_event_edit_control.gd" id="1_melcq"]
+[ext_resource type="Script" path="res://addons/event_audio/src/ea_event_edit_control.gd" id="1_melcq"]
 [ext_resource type="Texture2D" uid="uid://i4qa40akvjaa" path="res://addons/event_audio/icons/Tools.svg" id="2_31ihp"]
 [ext_resource type="Texture2D" uid="uid://dcbbwdp16tdns" path="res://addons/event_audio/icons/RandomNumberGenerator.svg" id="3_ikqib"]
 [ext_resource type="PackedScene" uid="uid://b84km51g3vs0n" path="res://addons/event_audio/scenes/bank_resource_line.tscn" id="5_nou6o"]
