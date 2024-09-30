@@ -1,25 +1,25 @@
 @tool
 extends Resource
-class_name AudioBankResource
+class_name EAEventBank
 
-@export var entries: Array[AudioBankEntry]
+@export var entries: Array[EAEvent]
     
 func add_entry():
-    entries.insert(0, AudioBankEntry.new())
+    entries.insert(0, EAEvent.new())
 
-func delete_entry(entry: AudioBankEntry):
+func delete_entry(entry: EAEvent):
     var entry_idx := entries.find(entry)
     if entry_idx >= 0:
         entries.remove_at(entry_idx)
 
-func find_entry_with_trigger(trigger: String) -> AudioBankEntry:
-    for entry: AudioBankEntry in entries:
+func find_entry_with_trigger(trigger: String) -> EAEvent:
+    for entry: EAEvent in entries:
         if entry.trigger_tags == trigger:
             return entry
 
     return null
         
-func _sort_func(a: AudioBankEntry, b: AudioBankEntry) -> bool:
+func _sort_func(a: EAEvent, b: EAEvent) -> bool:
     return a.trigger_tags < b.trigger_tags
     
 func sort_by_trigger():

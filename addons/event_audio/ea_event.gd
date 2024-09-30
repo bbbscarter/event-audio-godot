@@ -1,17 +1,17 @@
 @tool
 extends Resource
-class_name AudioBankEntry
+class_name EAEvent
 
 @export var audio_streams : Array[AudioStream] = []
 @export var probability_weights : Array[float] = []
 @export var trigger_tags: String = ""
-@export var playback_settings: AudioEntryPlaybackSettings
+@export var playback_settings: EAEventPlaybackSettings
 
 func _init():
     if audio_streams.size() == 0:
         audio_streams.push_front(null)
         probability_weights.push_front(1.0)
-    playback_settings = AudioEntryPlaybackSettings.new()
+    playback_settings = EAEventPlaybackSettings.new()
     
 func add_stream(index: int):
     audio_streams.insert(index+1, null)

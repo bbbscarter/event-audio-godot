@@ -1,6 +1,6 @@
 extends Resource
 
-class_name AudioEntryPlaybackSettings
+class_name EAEventPlaybackSettings
 
 ## The factor for the attenuation effect. Higher values make the sound audible over a larger distance.
 @export_group("Behaviour")

@@ -1,8 +1,8 @@
-class_name EventAudioEditorTools
+class_name 	EAEditorTools
 
 static var _editor_stream_player : AudioStreamPlayer
 
-static func play_sound(entry: AudioBankEntry, stream: AudioStream, rng):
+static func play_sound(entry: EAEvent, stream: AudioStream, rng):
     var main_screen = EditorInterface.get_editor_main_screen()
     var audio = _editor_stream_player
     if audio == null:

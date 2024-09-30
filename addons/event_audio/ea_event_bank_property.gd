@@ -1,14 +1,14 @@
 @tool
 extends EditorProperty
 
-class_name AudioBankResourceProperty
+class_name EAEventBankProperty
 
 var _audio_bank_line_scene = preload("res://addons/event_audio/scenes/bank_line.tscn")
 var _audio_bank_resource_line_scene = preload("res://addons/event_audio/scenes/bank_resource_line.tscn")
 
-var _resource: AudioBankResource
+var _resource: EAEventBank
 var _property_name: StringName
-var _entries: Array[AudioBankEntry]
+var _entries: Array[EAEvent]
 var _viewContainer := VBoxContainer.new()
 var _exclude_props = {"resource_local_to_scene": true, "Resource": true, "resource_name": true, "script": true}
 var _settings_open = {}
@@ -18,11 +18,16 @@ var _internal_update := 0
 
 var _focus_on_trigger : String = ""
 
+#----------------------------------------------
+# Godot call to update rendering
 func _update_property():
+    # If the rendering has already been handled, don't do anything else.
     if _internal_update > 0:
+        print("skipping updating property")
         _internal_update -= 1
         return
 
+    print("updating property")
     for i in _viewContainer.get_children():
         _viewContainer.remove_child(i)
 
@@ -35,9 +40,9 @@ func _update_property():
     await get_tree().process_frame
 
     for control : Control in _viewContainer.get_children():
-        if control is not AudioBankLineUI:
+        if control is not EAEventEditControl:
             continue
-        var line = control as AudioBankLineUI
+        var line = control as EAEventEditControl
         if line.TriggerNameEdit.text == _focus_on_trigger:
             print("found " + _focus_on_trigger)
             EditorInterface.get_inspector().ensure_control_visible(line.TriggerNameEdit)
@@ -48,7 +53,7 @@ func _update_property():
 func _enter_tree():
     _property_name = get_edited_property()
 
-    _resource = get_edited_object() as AudioBankResource
+    _resource = get_edited_object() as EAEventBank
     _entries = _resource.entries
 
     _viewContainer.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -57,14 +62,16 @@ func _enter_tree():
     add_child(_viewContainer)
     set_bottom_editor(_viewContainer)
 
+func _exit_tree() -> void:
+    EAEditorTools.stop_sound()
 
 #--------------------------------------
-func _add_settings_panel_maybe(entry: AudioBankEntry, entryLine: Container):
+func _add_settings_panel_maybe(entry: EAEvent, entryLine: Container):
     if entry in _settings_open:
         var panel := _make_settings_panel(entry)
         entryLine.add_sibling(panel)
 
-func _toggle_settings_panel(entry: AudioBankEntry, entryLine: Container):
+func _toggle_settings_panel(entry: EAEvent, entryLine: Container):
     if entry in _settings_open:
         var panel = _settings_open[entry]
         panel.get_parent().remove_child(panel)
@@ -74,8 +81,8 @@ func _toggle_settings_panel(entry: AudioBankEntry, entryLine: Container):
         _settings_open[entry] = panel
         entryLine.add_sibling(panel)
 
-func _make_settings_panel(entry : AudioBankEntry) -> Container:
-        return EventAudioEditorTools.make_property_panel(entry.playback_settings, "Playback Settings", _exclude_props, _on_settings_entry_changed)
+func _make_settings_panel(entry : EAEvent) -> Container:
+        return 	EAEditorTools.make_property_panel(entry.playback_settings, "Playback Settings", _exclude_props, _on_settings_entry_changed)
     
 func _make_lines():
     var add_button = Button.new()
@@ -95,8 +102,8 @@ func _make_lines():
         _viewContainer.add_child(entryLine)
         _add_settings_panel_maybe(entry, entryLine)
 
-func _makeEntryLine(entry: AudioBankEntry) -> Container:
-    var line := _audio_bank_line_scene.instantiate() as AudioBankLineUI
+func _makeEntryLine(entry: EAEvent) -> Container:
+    var line := _audio_bank_line_scene.instantiate() as EAEventEditControl
     line.DeleteTriggerButton.pressed.connect(_on_delete_entry_button_clicked.bind(entry))
     line.TriggerNameEdit.set_text(entry.trigger_tags)
     line.TriggerNameEdit.text_submitted.connect(_on_trigger_submitted.bind(entry, line.TriggerNameEdit))
@@ -105,7 +112,7 @@ func _makeEntryLine(entry: AudioBankEntry) -> Container:
     line.PlayRandomButton.pressed.connect(_on_play_random_button_clicked.bind(entry))
 
     for c1: int in entry.audio_streams.size():
-        var resource_line := _audio_bank_resource_line_scene.instantiate() as AudioResourceLineUI
+        var resource_line := _audio_bank_resource_line_scene.instantiate() as EAStreamEditControl
         line.ResourceList.add_child(resource_line)
         resource_line.set_as_first_resource(entry.audio_streams.size() == 1)
 
@@ -124,10 +131,10 @@ func _makeEntryLine(entry: AudioBankEntry) -> Container:
     return line
     
 
-func _on_settings_button_clicked(line: Container, entry: AudioBankEntry):
+func _on_settings_button_clicked(line: Container, entry: EAEvent):
     _toggle_settings_panel(entry, line)
 
-func _on_settings_entry_changed(val, settings: AudioEntryPlaybackSettings, member: StringName):
+func _on_settings_entry_changed(val, settings: EAEventPlaybackSettings, member: StringName):
     settings.set(member, val)
     _internal_update += 1
     emit_changed(_property_name, _entries)
@@ -137,37 +144,37 @@ func _on_add_entry_button_clicked():
     emit_changed(_property_name, _entries)
 
 func _on_stop_button_clicked():
-    EventAudioEditorTools.stop_sound()
+    EAEditorTools.stop_sound()
 
-func _on_delete_entry_button_clicked(entry: AudioBankEntry):
+func _on_delete_entry_button_clicked(entry: EAEvent):
     _resource.delete_entry(entry)
     emit_changed(_property_name, _entries)
 
-func _on_play_button_clicked(index: int, entry: AudioBankEntry):
+func _on_play_button_clicked(index: int, entry: EAEvent):
     var stream := entry.audio_streams[index]
     if stream:
-        EventAudioEditorTools.play_sound(entry, stream, _rng)
+        EAEditorTools.play_sound(entry, stream, _rng)
         
-func _on_play_random_button_clicked(entry: AudioBankEntry):
+func _on_play_random_button_clicked(entry: EAEvent):
     var roll := _rng.randf_range(0, 1.0)
     var stream := entry.get_weighted_random_stream(roll)
     if stream:
-        EventAudioEditorTools.play_sound(entry, stream, _rng)
+        EAEditorTools.play_sound(entry, stream, _rng)
 
-func _on_stream_weight_changed(val, index: int, entry: AudioBankEntry):
+func _on_stream_weight_changed(val, index: int, entry: EAEvent):
     entry.probability_weights[index] = val
     _internal_update += 1
     emit_changed(_property_name, _entries)
 
-func _on_add_resource_button_clicked(index: int, entry: AudioBankEntry):
+func _on_add_resource_button_clicked(index: int, entry: EAEvent):
     entry.add_stream(index)
     emit_changed(_property_name, _entries)
 
-func _on_delete_resource_button_clicked(index: int, entry: AudioBankEntry):
+func _on_delete_resource_button_clicked(index: int, entry: EAEvent):
     entry.remove_stream(index)
     emit_changed(_property_name, _entries)
 
-func _check_trigger_name(entry: AudioBankEntry, trigger: String) -> bool:
+func _check_trigger_name(entry: EAEvent, trigger: String) -> bool:
     var bank_entry := _resource.find_entry_with_trigger(trigger)
 
     if bank_entry and bank_entry != entry:
@@ -175,14 +182,14 @@ func _check_trigger_name(entry: AudioBankEntry, trigger: String) -> bool:
 
     return true
 
-func _on_trigger_changed(trigger: String, entry: AudioBankEntry, text_label):
+func _on_trigger_changed(trigger: String, entry: EAEvent, text_label):
     # If the trigger isn't valid, show an error color
     if _check_trigger_name(entry, trigger):
         text_label.modulate = Color.WHITE
     else:
         text_label.modulate = Color.RED
     
-func _on_trigger_submitted(trigger: String, entry: AudioBankEntry, text_label):
+func _on_trigger_submitted(trigger: String, entry: EAEvent, text_label):
     if _check_trigger_name(entry, trigger):
         entry.trigger_tags = trigger
         text_label.release_focus()
@@ -192,7 +199,7 @@ func _on_trigger_submitted(trigger: String, entry: AudioBankEntry, text_label):
         _focus_on_trigger = trigger
         emit_changed(_property_name, _entries)
 
-func _on_stream_changed(res: Resource, idx: int, entry: AudioBankEntry):
+func _on_stream_changed(res: Resource, idx: int, entry: EAEvent):
     entry.audio_streams[idx] = res as AudioStream
     _internal_update += 1
     emit_changed(_property_name, _entries)

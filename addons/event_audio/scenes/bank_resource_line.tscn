@@ -1,6 +1,6 @@
 [gd_scene load_steps=6 format=3 uid="uid://b84km51g3vs0n"]
 
-[ext_resource type="Script" path="res://addons/event_audio/audio_resource_line_ui.gd" id="1_fwtai"]
+[ext_resource type="Script" path="res://addons/event_audio/ea_stream_edit_control.gd" id="1_fwtai"]
 [ext_resource type="Texture2D" uid="uid://byclw0utbwbam" path="res://addons/event_audio/icons/Play.svg" id="2_jis6r"]
 [ext_resource type="Texture2D" uid="uid://dqg7mfau2g7ck" path="res://addons/event_audio/icons/Add.svg" id="3_aknch"]
 [ext_resource type="Texture2D" uid="uid://djgktanb5swk6" path="res://addons/event_audio/icons/Remove.svg" id="4_il77p"]

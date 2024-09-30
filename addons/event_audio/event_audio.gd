@@ -3,7 +3,7 @@ extends Node
 # Ideally this would be called just EventAudio, but that would class with the autoload
 class_name EventAudioAPI
 
-var _audio_banks: Array[AudioBankResource]
+var _audio_banks: Array[EAEventBank]
 @export var log_lookups: bool = true
 @export var log_deaths: bool = true
 @export var log_registrations: bool = true
@@ -21,14 +21,14 @@ static func get_instance() -> EventAudioAPI:
 class AudioEmitter2D:
     var source: Node2D
     var player: AudioStreamPlayer2D
-    var event: AudioBankEntry
+    var event: EAEvent
 
 var _active_emitters_2d = Array()
 
 class AudioEmitter3D:
     var source: Node3D
     var player: AudioStreamPlayer3D
-    var event: AudioBankEntry
+    var event: EAEvent
 
 var _active_emitters_3d = Array()
 
@@ -39,20 +39,23 @@ func _enter_tree():
 func _exit_tree():
     instance = null
 
-static func init_player_from_playback_settings(rng, stream_player, settings: AudioEntryPlaybackSettings):
+static func init_player_from_playback_settings(rng, stream_player, settings: EAEventPlaybackSettings):
     var min_pitch := min(settings.min_pitch, settings.max_pitch) as float
     var max_pitch := max(settings.min_pitch, settings.max_pitch) as float
     var pitch = rng.randf_range(min_pitch, max_pitch)
     stream_player.pitch_scale = pitch
     stream_player.volume_db = settings.volume_db
-    stream_player.panning_strength = settings.panning_strength
 
     if stream_player is AudioStreamPlayer3D:
         stream_player.unit_size = settings.unit_size
         stream_player.max_db = settings.max_db
-    else:
+        stream_player.panning_strength = settings.panning_strength
+
+    elif stream_player is AudioStreamPlayer2D:
         stream_player.max_distance = settings.max_distance
         stream_player.attenuation = settings.attenuation
+        stream_player.panning_strength = settings.panning_strength
+
         
         
     
@@ -111,13 +114,13 @@ func play_3d(trigger: String, source: Node3D) -> AudioEmitter3D:
 func stop(emitter):
     emitter.player.stop()
 
-func register_bank_resource(bank: AudioBankResource):
+func register_bank_resource(bank: EAEventBank):
     if log_registrations:
         print("Registering bank: " + bank.resource_name)
     _audio_banks.append(bank)
     _invalidate_trigger_map()
     
-func unregister_bank_resource(bank: AudioBankResource):
+func unregister_bank_resource(bank: EAEventBank):
     if log_registrations:
         print("Unregistering bank: " + bank.resource_name)
     var idx := _audio_banks.find(bank)
@@ -163,12 +166,12 @@ func _invalidate_trigger_map():
     
 func _make_trigger_map():
     _trigger_map = {}
-    for bank: AudioBankResource in _audio_banks:
+    for bank: EAEventBank in _audio_banks:
         for entry in bank.entries:
             var key = entry.trigger_tags
             _trigger_map[key] = entry
 
-func _find_entry_for_trigger(trigger: String) -> AudioBankEntry:
+func _find_entry_for_trigger(trigger: String) -> EAEvent:
     if _trigger_map.size() == 0:
         _make_trigger_map()
         
@@ -176,7 +179,7 @@ func _find_entry_for_trigger(trigger: String) -> AudioBankEntry:
 
     while current_trigger != "":
         _log_lookup(current_trigger)
-        var found_entry := _trigger_map.get(current_trigger) as AudioBankEntry
+        var found_entry := _trigger_map.get(current_trigger) as EAEvent
         if found_entry:
             _log_found(found_entry.trigger_tags)
             return found_entry

@@ -1,7 +1,7 @@
 [gd_scene load_steps=5 format=3 uid="uid://konnaekcsk2e"]
 
 [ext_resource type="Script" path="res://addons/event_audio/example/example_emitter_2d.gd" id="1_7u4pm"]
-[ext_resource type="Script" path="res://addons/event_audio/audio_bank.gd" id="3_q1afy"]
+[ext_resource type="Script" path="res://addons/event_audio/ea_event_bank_mounter.gd" id="3_q1afy"]
 [ext_resource type="Resource" uid="uid://cfxmacq8po281" path="res://addons/event_audio/example/example_audio_bank.tres" id="4_rp3pw"]
 
 [sub_resource type="SphereMesh" id="SphereMesh_7scev"]

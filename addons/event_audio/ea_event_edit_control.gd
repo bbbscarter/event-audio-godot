@@ -1,5 +1,5 @@
 extends Container
-class_name AudioBankLineUI
+class_name EAEventEditControl
 
 @export var DeleteTriggerButton : BaseButton
 @export var PlayRandomButton : BaseButton

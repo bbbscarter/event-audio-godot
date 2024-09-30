@@ -18,6 +18,7 @@ config/icon="res://icon.svg"
 [autoload]
 
 EventAudio="*res://addons/event_audio/scenes/event_audio_autoload.tscn"
+EventAudioCSharp="*res://addons/event_audio/EventAudio.cs"
 
 [debug]
 

@@ -1,6 +1,6 @@
 @tool
 extends Container
-class_name AudioResourceLineUI
+class_name EAStreamEditControl
 
 @export var Test : AudioStream
 @export var DeleteResourceButton : Button

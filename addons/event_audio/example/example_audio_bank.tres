@@ -1,16 +1,16 @@
-[gd_resource type="Resource" script_class="AudioBankResource" load_steps=17 format=3 uid="uid://cfxmacq8po281"]
+[gd_resource type="Resource" script_class="EAEventBank" load_steps=17 format=3 uid="uid://cfxmacq8po281"]
 
-[ext_resource type="Script" path="res://addons/event_audio/audio_bank_entry.gd" id="1_y4jxi"]
+[ext_resource type="Script" path="res://addons/event_audio/ea_event.gd" id="1_fy8lm"]
 [ext_resource type="AudioStream" uid="uid://7ncmg0ox4nxr" path="res://addons/event_audio/example/sounds/loop.wav" id="2_fyotq"]
-[ext_resource type="Script" path="res://addons/event_audio/audio_entry_playback_settings.gd" id="2_po287"]
-[ext_resource type="Script" path="res://addons/event_audio/audio_bank_resource.gd" id="2_rbntb"]
+[ext_resource type="Script" path="res://addons/event_audio/ea_event_bank.gd" id="2_rbntb"]
+[ext_resource type="Script" path="res://addons/event_audio/ea_event_playback_settings.gd" id="3_fy5gc"]
 [ext_resource type="AudioStream" uid="uid://byg26ypxea5qh" path="res://addons/event_audio/example/sounds/laser1.wav" id="3_nyuuq"]
 [ext_resource type="AudioStream" uid="uid://ftyi4ikfmbii" path="res://addons/event_audio/example/sounds/laser2.wav" id="4_ahbca"]
 [ext_resource type="AudioStream" uid="uid://cqo6bi2ygpwbu" path="res://addons/event_audio/example/sounds/shot1.wav" id="4_fpv34"]
 [ext_resource type="AudioStream" uid="uid://cultflwybpfo1" path="res://addons/event_audio/example/sounds/shot2.wav" id="5_1yf0v"]
 
 [sub_resource type="Resource" id="Resource_dd35s"]
-script = ExtResource("2_po287")
+script = ExtResource("3_fy5gc")
 stop_when_source_dies = false
 stationary = true
 volume_db = 0.0
@@ -23,14 +23,14 @@ unit_size = 10.0
 max_db = 3.0
 
 [sub_resource type="Resource" id="Resource_lfo5e"]
-script = ExtResource("1_y4jxi")
+script = ExtResource("1_fy8lm")
 audio_streams = Array[AudioStream]([ExtResource("4_fpv34")])
 probability_weights = Array[float]([1.0])
 trigger_tags = "hit"
 playback_settings = SubResource("Resource_dd35s")
 
 [sub_resource type="Resource" id="Resource_j54ca"]
-script = ExtResource("2_po287")
+script = ExtResource("3_fy5gc")
 stop_when_source_dies = false
 stationary = true
 volume_db = 0.0
@@ -43,14 +43,14 @@ unit_size = 10.0
 max_db = 3.0
 
 [sub_resource type="Resource" id="Resource_d2op2"]
-script = ExtResource("1_y4jxi")
+script = ExtResource("1_fy8lm")
 audio_streams = Array[AudioStream]([ExtResource("5_1yf0v")])
 probability_weights = Array[float]([1.0])
 trigger_tags = "hit+large"
 playback_settings = SubResource("Resource_j54ca")
 
 [sub_resource type="Resource" id="Resource_ljdcd"]
-script = ExtResource("2_po287")
+script = ExtResource("3_fy5gc")
 stop_when_source_dies = false
 stationary = false
 volume_db = 0.0
@@ -63,14 +63,14 @@ unit_size = 10.0
 max_db = 3.0
 
 [sub_resource type="Resource" id="Resource_ps0cx"]
-script = ExtResource("1_y4jxi")
+script = ExtResource("1_fy8lm")
 audio_streams = Array[AudioStream]([ExtResource("2_fyotq")])
 probability_weights = Array[float]([1.0])
 trigger_tags = "loop"
 playback_settings = SubResource("Resource_ljdcd")
 
 [sub_resource type="Resource" id="Resource_1xrvu"]
-script = ExtResource("2_po287")
+script = ExtResource("3_fy5gc")
 stop_when_source_dies = false
 stationary = true
 volume_db = 0.0
@@ -83,12 +83,12 @@ unit_size = 10.0
 max_db = 3.0
 
 [sub_resource type="Resource" id="Resource_xjlcv"]
-script = ExtResource("1_y4jxi")
+script = ExtResource("1_fy8lm")
 audio_streams = Array[AudioStream]([ExtResource("3_nyuuq"), ExtResource("4_ahbca")])
-probability_weights = Array[float]([1.0, 1.0])
+probability_weights = Array[float]([0.15, 1.0])
 trigger_tags = "shoot"
 playback_settings = SubResource("Resource_1xrvu")
 
 [resource]
 script = ExtResource("2_rbntb")
-entries = Array[ExtResource("1_y4jxi")]([SubResource("Resource_lfo5e"), SubResource("Resource_d2op2"), SubResource("Resource_ps0cx"), SubResource("Resource_xjlcv")])
+entries = Array[ExtResource("1_fy8lm")]([SubResource("Resource_lfo5e"), SubResource("Resource_d2op2"), SubResource("Resource_ps0cx"), SubResource("Resource_xjlcv")])
