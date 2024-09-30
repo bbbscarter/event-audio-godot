@@ -23,12 +23,12 @@ func remove_stream(index: int):
     
 func get_weighted_random_stream(random: float) -> AudioStream:
     var total_weight := 0.0
-    for w:float in probability_weights:
+    for w : float in probability_weights:
         total_weight = total_weight + w
     
     var r := random * total_weight    
     var num_entries := probability_weights.size()
-    var weight_count = 0
+    var weight_count := 0.0
     for i in num_entries:
         if i + 1 == num_entries:
             return audio_streams[i]
