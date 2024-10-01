@@ -4,7 +4,7 @@ A simple fire-and-forget audio triggering system for Godot.
 - Create audio banks, linking event triggers with audio resources.
 - Play audio with one line of code:
 ```gdscript
-EventAudio.play3d("laser+shoot", my_player)
+EventAudio.play_3d("shoot+laser", my_player)
 ```
 - If a trigger isn't found, nothing is played.
 
