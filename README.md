@@ -18,8 +18,8 @@ EventAudio.play3d("laser+shoot", my_player)
 
 ## Basic Workflow
 It works as follows:
-1. Build an Event bank, which maps ‘audio event’ trigger strings to audio assets.
-![Image of audio bank][screenshots/audio-bank.png]
+1. Build an Event Bank, which maps ‘audio event’ trigger strings to audio assets.
+![Image of audio bank](screenshots/audio-bank.png?raw="true")
 
 2. Mount the event bank in your scene somehow. There’s a helper node to do this, or you can do it programmatically.
 3. In game, wherever you think you need audio trigger an audio event.
@@ -58,7 +58,7 @@ This allows an audio designer to populate the audio space quickly with triggers 
 - **Optional source lifetime tracking**. By default, audio will play until it finishes. If it should terminate when the source is killed, this can also be flagged in the event bank.
 - **2D and 3D playback settings**. Playback settings like volume, panning strength and attenuation can be set in the event.
 - **Bank editor**. All these options are kept together in the details panel of the bank event editor:
-    ![settings editor][screenshots/settings.png]
+    ![settings editor](screenshots/settings.png)
 - **Manual control**. When an event is triggered, it returns a handle to the resulting audio player, which can be manipulated  programmatically as normal. This can be handy in the case of e.g. looping audio.
  
 
