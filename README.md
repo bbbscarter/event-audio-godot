@@ -66,3 +66,5 @@ This allows an audio designer to populate the audio space quickly with triggers 
 - Download from the Godot Asset Library.
 - Import the plugin into your Godot project.
 - Enable the plugin in your project settings.
+- You may get compilation errors after installing - if so, restart Godot and they should go away.
+- If using Godot_mono, you may additionally need to run a C# compile before restarting Godot. 
