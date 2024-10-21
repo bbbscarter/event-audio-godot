@@ -22,7 +22,7 @@ mesh = SubResource("SphereMesh_3bdsu")
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 0.176947, 0.98422, 0, -0.98422, 0.176947, 0, 1.9958, 0)
 
-[node name="TestAudioBank" type="Node" parent="."]
+[node name="ExampleAudioBank" type="Node" parent="."]
 script = ExtResource("1_0y6i8")
 _audio_bank_resource = ExtResource("2_qo1e5")
 
