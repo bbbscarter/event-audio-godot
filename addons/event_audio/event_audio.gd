@@ -50,7 +50,8 @@ func play_3d(trigger: String, source: Node3D) -> AudioEmitter3D:
     return _play_event(event, stream_player, source)
 
 func stop(emitter):
-    emitter.player.stop()
+    if emitter.player != null:
+        emitter.player.stop()
 
 func register_event_bank(bank: EAEventBank):
     if log_registrations:
