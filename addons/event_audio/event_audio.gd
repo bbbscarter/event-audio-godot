@@ -33,21 +33,21 @@ var _active_emitters_3d = Array()
 static func get_instance() -> EventAudioAPI:
     return instance
 
-func play_2d(trigger: String, source: Node2D) -> AudioEmitter2D:
-    var event := _find_event_for_trigger(trigger)
-    if event == null:
-        return null
+func play_2d(trigger: String, source: Node2D, output_bus: String = '') -> AudioEmitter2D:
+	var event := _find_event_for_trigger(trigger)
+	if event == null:
+		return null
 
-    var stream_player = AudioStreamPlayer2D.new()
-    return _play_event(event, stream_player, source)
+	var stream_player = AudioStreamPlayer2D.new()
+	return _play_event(event, stream_player, source, output_bus)
 
-func play_3d(trigger: String, source: Node3D) -> AudioEmitter3D:
-    var event := _find_event_for_trigger(trigger)
-    if event == null:
-        return null
+func play_3d(trigger: String, source: Node3D, output_bus: String = '') -> AudioEmitter3D:
+	var event := _find_event_for_trigger(trigger)
+	if event == null:
+		return null
 
-    var stream_player = AudioStreamPlayer3D.new()
-    return _play_event(event, stream_player, source)
+	var stream_player = AudioStreamPlayer3D.new()
+	return _play_event(event, stream_player, source, output_bus)
 
 func stop(emitter):
     if emitter.player != null:
@@ -83,6 +83,7 @@ static func init_player_from_playback_settings(rng, stream_player, settings: EAE
         stream_player.max_distance = settings.max_distance
         stream_player.attenuation = settings.attenuation
         stream_player.panning_strength = settings.panning_strength
+	stream_player.set_bus(settings.playback_bus)
 
 #---------------------------------------------------------
 func _init():
@@ -128,7 +129,7 @@ func _exit_tree():
 #---------------------------------------------------------------------------------
 # Internals
 #---------------------------------------------------------------------------------
-func _play_event(event: EAEvent, stream_player, source: Node):
+func _play_event(event: EAEvent, stream_player, source: Node, output_bus: String = ''):
     var stream := event.get_weighted_random_stream(_rng.randf())    
     stream_player.name = "AudioPlayback"
     add_child(stream_player)
@@ -156,6 +157,8 @@ func _play_event(event: EAEvent, stream_player, source: Node):
         _active_emitters_3d.append(emitter)
         return emitter
     
+	if output_bus != '':
+		stream_player.set_bus(output_bus)
 
 func _invalidate_trigger_map():
     _trigger_map = {}
