@@ -34,20 +34,20 @@ static func get_instance() -> EventAudioAPI:
     return instance
 
 func play_2d(trigger: String, source: Node2D, output_bus: String = '') -> AudioEmitter2D:
-	var event := _find_event_for_trigger(trigger)
-	if event == null:
-		return null
+    var event := _find_event_for_trigger(trigger)
+    if event == null:
+        return null
 
-	var stream_player = AudioStreamPlayer2D.new()
-	return _play_event(event, stream_player, source, output_bus)
+    var stream_player = AudioStreamPlayer2D.new()
+    return _play_event(event, stream_player, source, output_bus)
 
 func play_3d(trigger: String, source: Node3D, output_bus: String = '') -> AudioEmitter3D:
-	var event := _find_event_for_trigger(trigger)
-	if event == null:
-		return null
+    var event := _find_event_for_trigger(trigger)
+    if event == null:
+        return null
 
-	var stream_player = AudioStreamPlayer3D.new()
-	return _play_event(event, stream_player, source, output_bus)
+    var stream_player = AudioStreamPlayer3D.new()
+    return _play_event(event, stream_player, source, output_bus)
 
 func stop(emitter):
     if emitter.player != null:
@@ -73,6 +73,7 @@ static func init_player_from_playback_settings(rng, stream_player, settings: EAE
     var pitch = rng.randf_range(min_pitch, max_pitch)
     stream_player.pitch_scale = pitch
     stream_player.volume_db = settings.volume_db
+    stream_player.set_bus(settings.playback_bus)
 
     if stream_player is AudioStreamPlayer3D:
         stream_player.unit_size = settings.unit_size
@@ -83,7 +84,6 @@ static func init_player_from_playback_settings(rng, stream_player, settings: EAE
         stream_player.max_distance = settings.max_distance
         stream_player.attenuation = settings.attenuation
         stream_player.panning_strength = settings.panning_strength
-	stream_player.set_bus(settings.playback_bus)
 
 #---------------------------------------------------------
 func _init():
@@ -136,6 +136,8 @@ func _play_event(event: EAEvent, stream_player, source: Node, output_bus: String
     stream_player.stream = stream
 
     EventAudioAPI.init_player_from_playback_settings(_rng, stream_player, event.playback_settings)
+    if output_bus != '':
+        stream_player.set_bus(output_bus)
 
     if source:
         stream_player.global_position = source.global_position
@@ -157,8 +159,6 @@ func _play_event(event: EAEvent, stream_player, source: Node, output_bus: String
         _active_emitters_3d.append(emitter)
         return emitter
     
-	if output_bus != '':
-		stream_player.set_bus(output_bus)
 
 func _invalidate_trigger_map():
     _trigger_map = {}
