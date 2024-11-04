@@ -33,21 +33,21 @@ var _active_emitters_3d = Array()
 static func get_instance() -> EventAudioAPI:
     return instance
 
-func play_2d(trigger: String, source: Node2D) -> AudioEmitter2D:
+func play_2d(trigger: String, source: Node2D, output_bus: String = '') -> AudioEmitter2D:
     var event := _find_event_for_trigger(trigger)
     if event == null:
         return null
 
     var stream_player = AudioStreamPlayer2D.new()
-    return _play_event(event, stream_player, source)
+    return _play_event(event, stream_player, source, output_bus)
 
-func play_3d(trigger: String, source: Node3D) -> AudioEmitter3D:
+func play_3d(trigger: String, source: Node3D, output_bus: String = '') -> AudioEmitter3D:
     var event := _find_event_for_trigger(trigger)
     if event == null:
         return null
 
     var stream_player = AudioStreamPlayer3D.new()
-    return _play_event(event, stream_player, source)
+    return _play_event(event, stream_player, source, output_bus)
 
 func stop(emitter):
     if emitter.player != null:
@@ -73,6 +73,7 @@ static func init_player_from_playback_settings(rng, stream_player, settings: EAE
     var pitch = rng.randf_range(min_pitch, max_pitch)
     stream_player.pitch_scale = pitch
     stream_player.volume_db = settings.volume_db
+    stream_player.set_bus(settings.playback_bus)
 
     if stream_player is AudioStreamPlayer3D:
         stream_player.unit_size = settings.unit_size
@@ -128,13 +129,15 @@ func _exit_tree():
 #---------------------------------------------------------------------------------
 # Internals
 #---------------------------------------------------------------------------------
-func _play_event(event: EAEvent, stream_player, source: Node):
+func _play_event(event: EAEvent, stream_player, source: Node, output_bus: String = ''):
     var stream := event.get_weighted_random_stream(_rng.randf())    
     stream_player.name = "AudioPlayback"
     add_child(stream_player)
     stream_player.stream = stream
 
     EventAudioAPI.init_player_from_playback_settings(_rng, stream_player, event.playback_settings)
+    if output_bus != '':
+        stream_player.set_bus(output_bus)
 
     if source:
         stream_player.global_position = source.global_position

@@ -7,6 +7,9 @@ class_name EAEventPlaybackSettings
 @export var stop_when_source_dies := false
 @export var stationary := false
 
+@export_group("Audio bus")
+@export var playback_bus := "Master"
+
 @export_group("Shared Playback")
 @export_range(-10.0, 10.0, 0.1) var volume_db := 0.0
 @export_range(0.1, 2.0, 0.1) var min_pitch := 1.0
